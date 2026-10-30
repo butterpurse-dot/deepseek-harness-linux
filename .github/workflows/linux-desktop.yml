@@ -31,22 +31,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build workspace
-        run: pnpm run build
-
-      - name: Prepare Desktop runtime
-        working-directory: apps/desktop
-        env:
-          DSH_DESKTOP_UNSIGNED: '1'
-          DSH_DESKTOP_TARGET_PLATFORM: linux
-          DSH_DESKTOP_TARGET_ARCH: x64
-          DSH_DESKTOP_APP_ID: com.deepseek.harness
-        run: |
-          pnpm run prepare:runtime
-          pnpm run prepare:packages
-          pnpm run prepare:dsh
-
-      - name: Package AppImage, deb and tarball
+      - name: Package and publish
         working-directory: apps/desktop
         env:
           DSH_DESKTOP_UNSIGNED: '1'
@@ -54,7 +39,7 @@ jobs:
           DSH_DESKTOP_TARGET_ARCH: x64
           DSH_DESKTOP_APP_ID: com.deepseek.harness
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pnpm exec electron-builder --config electron-builder.config.mjs --linux --x64 --publish always
+        run: pnpm run package:linux:x64 -- --unsigned --publish
 
       - name: Checksums
         working-directory: apps/desktop/.desktop-build/targets/linux-x64/unsigned-artifacts
