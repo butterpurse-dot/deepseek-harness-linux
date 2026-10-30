@@ -123,7 +123,6 @@ export function createElectronBuilderConfig(
     // Unsigned builds carry their own suffix so a shared file can never pass for a release artifact.
     artifactName: `deepseek-harness-\${version}-\${os}-\${arch}${output.suffix}.\${ext}`,
     directories: { output: output.directory },
-    ...(packagesLinux ? { publish: [{ provider: 'github', owner: 'butterpurse-dot', repo: 'deepseek-harness-linux', releaseType: 'draft' }] } : {}),
     asar: true,
     electronDist: buildPaths.electron,
     electronFuses: { runAsNode: true },
@@ -278,6 +277,10 @@ export function createElectronBuilderConfig(
       differentialPackage: true,
     },
     detectUpdateChannel: false,
-    publish: update === undefined ? null : [{ provider: 'generic', url: update.publicUrl, channel: update.channel }],
+    publish: update === undefined
+      ? (packagesLinux
+        ? [{ provider: 'github', owner: 'butterpurse-dot', repo: 'deepseek-harness-linux', releaseType: 'draft' }]
+        : null)
+      : [{ provider: 'generic', url: update.publicUrl, channel: update.channel }],
   }
 }
