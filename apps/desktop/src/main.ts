@@ -279,6 +279,9 @@ function createWindow(preload: string, show = false, primary = false): BrowserWi
       visualEffectState: 'active' as const,
       backgroundColor: '#00000000',
     } : {}),
+    ...(process.platform === 'linux' ? {
+      icon: join(app.getAppPath(), 'resources', 'icon.png'),
+    } : {}),
     webPreferences: {
       preload,
       nodeIntegration: false,
@@ -366,6 +369,7 @@ function createWindow(preload: string, show = false, primary = false): BrowserWi
 }
 
 async function main(): Promise<void> {
+  if (process.platform === 'linux') app.setDesktopName('dsh-desktop.desktop')
   const desktopSettings = readDesktopSettings(app.getPath('userData'))
   void pruneCrashReports(app.getPath('logs'))
   const journalDirectory = process.env.DSH_DESKTOP_UPDATE_JOURNAL_DIR
