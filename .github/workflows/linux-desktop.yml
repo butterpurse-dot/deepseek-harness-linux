@@ -53,8 +53,4 @@ jobs:
           tag="v$version"
           artifacts="apps/desktop/.desktop-build/targets/linux-x64/unsigned-artifacts"
           gh release upload "$tag" "$artifacts/SHA256SUMS.txt" --clobber
-          if printf '%s' "$version" | grep -q -- '-'; then
-            gh release edit "$tag" --draft=false --prerelease
-          else
-            gh release edit "$tag" --draft=false
-          fi
+          gh release edit "$tag" --draft=false
