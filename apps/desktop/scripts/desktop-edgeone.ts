@@ -27,6 +27,9 @@ export function resolveDesktopPurgeConfig(
 ): DesktopPurgeConfig {
   if (resolveDesktopAutoUpdateEnvironment(env) !== 'production') throw new DesktopPurgeError('desktop purge: production is required')
   const { platform, arch } = desktopTargetPlatform(target)
+  if (target !== 'mac-arm64' && target !== 'mac-x64' && target !== 'win-x64') {
+    throw new DesktopPurgeError(`desktop purge: unsupported target ${target}`)
+  }
   const update = resolveDesktopUploadConfig(env, platform, arch)
   const zoneId = requiredEnvironmentValue(env, 'DOWNLOAD_PROD_EO_ZONE_ID')
   if (!/^zone-[a-z0-9]+$/u.test(zoneId)) throw new DesktopPurgeError('desktop purge: DOWNLOAD_PROD_EO_ZONE_ID must name one EO zone')
