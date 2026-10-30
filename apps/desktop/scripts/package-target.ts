@@ -226,6 +226,8 @@ interface DesktopPackageInvocation {
   readonly unsigned: boolean
   readonly skipNotarization: boolean
   readonly check: boolean
+  /** Publish built artifacts with electron-builder's GitHub provider. */
+  readonly publish: boolean
   /** Build identifier to publish under, when this build does not publish the product version. */
   readonly requestedBuildVersion: string | undefined
 }
@@ -259,6 +261,7 @@ export function parseDesktopPackageInvocation(
       unsigned: { type: 'boolean', default: false },
       'skip-notarization': { type: 'boolean', default: false },
       check: { type: 'boolean', default: false },
+      publish: { type: 'boolean', default: false },
       'build-version': { type: 'string' },
     },
   })
@@ -279,6 +282,7 @@ export function parseDesktopPackageInvocation(
     unsigned: values.unsigned,
     skipNotarization: values['skip-notarization'],
     check: values.check,
+    publish: values.publish,
     requestedBuildVersion,
   }
 }
@@ -294,6 +298,7 @@ export function desktopElectronBuilderArguments(
   target: DesktopPackageTarget,
   directory: boolean,
   artifact?: DesktopPrepackagedArtifact,
+  publish = false,
 ): readonly string[] {
   return [
     'exec',
@@ -304,7 +309,7 @@ export function desktopElectronBuilderArguments(
     ...(artifact === undefined ? [] : [artifact.format]),
     target.builderArch,
     '--publish',
-    'never',
+    publish ? 'always' : 'never',
     ...(directory ? ['--dir'] : []),
     ...(artifact === undefined ? [] : [
       ...(target.platform === 'darwin' ? ['--config.mac.notarize=false'] : []),
@@ -508,7 +513,9 @@ export async function packageTarget(
         { cwd: APP_ROOT, env: electronBuilderEnv, timeoutMs: 60_000 })
     })
   }
-  await execute(invocation.unsigned ? ['run', 'build', '--profile', 'local'] : ['run', 'build:official'], buildEnv, REPOSITORY_ROOT)
+  await execute(target.platform === 'linux' || !invocation.unsigned
+    ? ['run', 'build:official']
+    : ['run', 'build', '--profile', 'local'], buildEnv, REPOSITORY_ROOT)
   let preparationFailure: { error: unknown } | undefined
   const executePreparation = async (args: readonly string[], env: NodeJS.ProcessEnv, cwd?: string): Promise<void> => {
     if (preparationFailure !== undefined) throw preparationFailure.error
@@ -586,7 +593,7 @@ export async function packageTarget(
         await buildMacArtifact({ format, appPath, output: artifactsRoot })
       }
     } else {
-      await signedStage('artifacts', () => execute(desktopElectronBuilderArguments(target, invocation.directory), electronBuilderEnv))
+      await signedStage('artifacts', () => execute(desktopElectronBuilderArguments(target, invocation.directory, undefined, invocation.publish), electronBuilderEnv))
     }
     await execute(['exec', 'tsx', 'scripts/smoke-packaged-runtime.ts',
       ...(invocation.unsigned ? ['--unsigned'] : []), ...(invocation.skipNotarization ? ['--skip-notarization'] : [])], targetEnv)
