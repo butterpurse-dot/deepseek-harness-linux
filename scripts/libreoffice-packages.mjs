@@ -11,6 +11,9 @@ import { isAbsolute, join, relative, sep } from 'node:path'
  * @returns {string} Engine package suffix.
  */
 export function selectOfficeEngine(manifest, target) {
+  // The native Linux engine is not published with every optional dependency installed;
+  // the WASM engine is the supported Linux fallback and keeps document conversion working.
+  if (target.platform === 'linux') return 'wasm'
   const native = `${target.platform}-${target.arch}`
   return Object.hasOwn(manifest.optionalDependencies ?? {}, `@deepseek-ai/libreoffice-kit-${native}`) ? native : 'wasm'
 }

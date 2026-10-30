@@ -21,6 +21,8 @@ const TARGETS = {
   'mac-arm64': { platform: 'darwin', arch: 'arm64', os: 'mac' },
   'mac-x64': { platform: 'darwin', arch: 'x64', os: 'mac' },
   'win-x64': { platform: 'win32', arch: 'x64', os: 'win' },
+  'linux-x64': { platform: 'linux', arch: 'x64', os: 'linux' },
+  'linux-arm64': { platform: 'linux', arch: 'arm64', os: 'linux' },
 } as const satisfies Record<DesktopPackageTargetName, {
   readonly platform: NodeJS.Platform
   readonly arch: string
@@ -200,6 +202,9 @@ export async function createDesktopUploadPlan(
     throw new Error(`desktop upload: desktop version ${desktopVersion} does not match current dsh version ${dshVersion}`)
   }
 
+  if (targetName === 'linux-x64' || targetName === 'linux-arm64') {
+    throw new Error(`desktop upload: Linux targets publish from their workflow (${targetName})`)
+  }
   const update = resolveDesktopUploadConfig(environment, target.platform, target.arch)
   const buildRecord = await jsonFile(
     join(artifactsRoot, desktopBuildRecordFilename(targetName)),

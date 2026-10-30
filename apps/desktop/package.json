@@ -45,7 +45,9 @@
     "upload:latest:mac:arm64": "tsx scripts/upload-target.ts mac-arm64 --latest",
     "upload:latest:mac:x64": "tsx scripts/upload-target.ts mac-x64 --latest",
     "upload:latest:win:x64": "tsx scripts/upload-target.ts win-x64 --latest",
-    "purge:latest": "tsx scripts/upload-target.ts --latest --purge-only"
+    "purge:latest": "tsx scripts/upload-target.ts --latest --purge-only",
+    "package:linux:x64": "tsx scripts/package-target.ts linux-x64",
+    "package:linux:arm64": "tsx scripts/package-target.ts linux-arm64"
   },
   "dependencies": {
     "electron-updater": "^6.8.9",
@@ -91,5 +93,7 @@
     "@deepseek-ai/dsh-util-file-drag": "workspace:*",
     "@deepseek-ai/dsh-client-ui-file-actions": "workspace:*",
     "tencentcloud-sdk-nodejs-teo": "4.1.330"
-  }
+  },
+  "desktopName": "dsh-desktop.desktop",
+  "homepage": "https://github.com/butterpurse-dot/deepseek-harness-linux"
 }

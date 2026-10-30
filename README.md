@@ -1,77 +1,73 @@
-# DeepSeek Harness
+# DeepSeek Harness for Linux
 
-English | [中文](README.zh.md)
+Community Linux packaging for the official [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) desktop app. This is a downstream fork, not an official DeepSeek project.
 
-DeepSeek Harness (`dsh`) is an open-source agent harness developed by [DeepSeek AI](https://deepseek.com).
+The upstream desktop app is packaged for macOS and Windows only. This fork adds a Linux release target and publishes **AppImage**, **`.deb`**, and **`.tar.gz`** builds, with AppImage auto-update through `electron-updater` and GitHub Releases.
 
-It is built on an **everything-is-a-plugin** architecture and powered by [Cordis](https://github.com/cordiverse/cordis), whose design is described in [_A Programming Paradigm for Spatiotemporal Composability_](https://arxiv.org/abs/2608.25512).
+## Install
 
-Documentation: [https://deepseek-harness.github.io/deepseek-harness/](https://deepseek-harness.github.io/deepseek-harness/)
-
-## Developer preview
-
-DeepSeek Harness is in _developer preview_ and iterating rapidly. **THERE WILL BE COMPATIBILITY-BREAKING CHANGES.**
-
-Review the [safety notice](SAFETY.md) before running the project.
-
-## Run
-
-### Run from `npm`
-
-Install `Node.js`, then run:
+One command (installs to `~/.local`):
 
 ```sh
-npx @deepseek-ai/dsh web
+curl -fsSL https://raw.githubusercontent.com/butterpurse-dot/deepseek-harness-linux/master/scripts/install-linux.sh | bash
 ```
 
-The command starts the Web UI at `http://127.0.0.1:3080` by default and opens it in the default browser for a local launch. An SSH launch only prints the host URL because the SSH client or editor owns the local forwarded address. Pass `--no-open` to run the server without opening a browser. See [Web UI guide](docs/user/guide/index.md).
+Then run `deepseek-harness` or open **DeepSeek Harness** from your application menu.
 
-### Run from source
+Manual options, from [Releases](https://github.com/butterpurse-dot/deepseek-harness-linux/releases):
 
-To run from a repository checkout:
+| Format | Install |
+|---|---|
+| AppImage | `chmod +x deepseek-harness-*.AppImage && ./deepseek-harness-*.AppImage` |
+| Debian / Ubuntu | `sudo apt install ./deepseek-harness-*.deb` |
+| Portable | `tar -xzf deepseek-harness-*.tar.gz && ./deepseek-harness-*/deepseek-harness` |
+
+Every release ships `SHA256SUMS.txt`. Verify with `sha256sum -c SHA256SUMS.txt`.
+
+AppImage needs FUSE 2 on some distributions:
 
 ```sh
-git clone https://github.com/deepseek-ai/deepseek-harness.git
-cd deepseek-harness
-pnpm install
+sudo apt install libfuse2        # Debian / Ubuntu
+sudo dnf install fuse2           # Fedora / RHEL
+```
+
+## Updates
+
+Installed AppImages check GitHub Releases through `electron-updater`. The app asks before downloading; installation happens on the next restart. `.deb` and `.tar.gz` users update by installing the newer release.
+
+## What is included
+
+- The official Electron desktop application (`apps/desktop`), unmodified except for the Linux target wiring and desktop icon.
+- The bundled Node, pnpm, and Python runtime, so no system Node installation is required.
+- The official agent, plugin, workspace, and `dsh://` protocol behaviour.
+
+## Status
+
+- **x64** builds are published.
+- Builds are **unsigned**; there is no Linux code-signing story upstream yet. Checksums are published for every artifact.
+- `arm64` is wired into the build target but is not published yet.
+- Office document conversion uses the WASM engine on Linux, matching upstream's fallback.
+
+## Build from source
+
+Requirements: Linux x64, Node 24.9+, pnpm 11, git.
+
+```sh
+git clone https://github.com/butterpurse-dot/deepseek-harness-linux
+cd deepseek-harness-linux
+corepack enable
+corepack prepare pnpm@11.28.5 --activate
+pnpm install --frozen-lockfile
 pnpm run build
-pnpm dsh web
+pnpm --filter @deepseek-ai/dsh-desktop run package:linux:x64 -- --unsigned
 ```
 
-`pnpm run build` prepares the repository artifacts. `pnpm dsh web` uses those built artifacts without rebuilding.
+Artifacts land in `apps/desktop/.desktop-build/targets/linux-x64/unsigned-artifacts/`.
 
-## Community and support
+## Syncing with upstream
 
-- Submit feedback or bug reports through [GitHub Discussions](https://github.com/deepseek-ai/deepseek-harness/discussions).
-- Add the [`dsh-plugin`](https://github.com/topics/dsh-plugin) topic to your plugin repository for discoverability.
-- Join <a href="https://discord.gg/4MrtZUhpxg">DeepSeek Harness Discord community</a>.
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md).
-
-## Development
-
-Start with the [development guide](docs/development.md) and [architecture documentation](docs/architecture.md).
-
-`pnpm run dev:web` builds, serves, and rebuilds client bundles on source edits in one terminal, and `make help` lists the matching Make targets for Web and Desktop; the guide's application commands section owns the full table.
-
-For agents, follow [AGENTS.md](AGENTS.md).
-
-## Citation
-
-```bibtex
-@misc{deepseek-harness2026,
-  title={DeepSeek Harness: Everything is a Plugin},
-  author={DeepSeek-AI},
-  year={2026},
-  publisher={GitHub},
-  howpublished={\url{https://github.com/deepseek-ai/deepseek-harness}},
-}
-```
+This fork tracks `deepseek-ai/deepseek-harness`. The Linux changes are limited to the desktop target resolver, the packaging target table, the electron-builder Linux configuration, and the desktop icon/desktop-name wiring. Everything else is upstream code.
 
 ## License
 
-[MIT](LICENSE)
-
-Third-party dependencies and their licenses are disclosed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+MIT, matching upstream. DeepSeek Harness is a DeepSeek AI project; this repository is an independent community build.
