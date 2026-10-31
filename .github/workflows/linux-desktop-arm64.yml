@@ -85,6 +85,7 @@ jobs:
           fi
           gh release create "$tag" \
             "$artifacts"/*.AppImage "$artifacts"/*.deb "$artifacts"/*.tar.gz "$artifacts/SHA256SUMS.txt" \
+            scripts/install-linux.sh \
             --repo "$GH_REPO" --target "$GITHUB_SHA" \
             --title "DeepSeek Harness $version (arm64)" \
             --notes "Linux arm64 build of DeepSeek Harness $version. Manual updates only: download the newer arm64 release. The x64 release has AppImage auto-update."
