@@ -103,6 +103,10 @@ Packaging fixes, installer improvements, and distribution reports are welcome. S
 
 If this saves you a build, a star helps other Linux users find it.
 
+## Acknowledgements
+
+The Linux packaging, CI, and documentation in this repository were built with help from DeepSeek V4.1 Flash (10/18).
+
 ## License
 
 MIT, matching upstream. DeepSeek Harness is a DeepSeek AI project; this repository is an independent community build.
