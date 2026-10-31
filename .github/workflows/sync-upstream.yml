@@ -1,0 +1,116 @@
+name: Sync upstream release
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+  issues: write
+
+concurrency:
+  group: sync-upstream
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.28.5 --activate
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Find the newest upstream release
+        id: upstream
+        run: |
+          git remote add upstream https://github.com/deepseek-ai/deepseek-harness.git
+          git fetch --tags --force upstream
+          version="$(git tag -l 'dsh-v*' | sed 's/^dsh-v//' | sort -V | tail -1)"
+          test -n "$version"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "tag=dsh-v$version" >> "$GITHUB_OUTPUT"
+
+      - name: Compare versions
+        id: compare
+        run: |
+          current="$(node -p "require('./apps/desktop/package.json').version")"
+          target="${{ steps.upstream.outputs.version }}"
+          echo "current=$current" >> "$GITHUB_OUTPUT"
+          if node -e "process.exit(require('semver').gt(process.argv[1], process.argv[2]) ? 0 : 1)" "$target" "$current"; then
+            echo "needed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "needed=false" >> "$GITHUB_OUTPUT"
+            echo "up to date: $current (newest upstream release: $target)"
+          fi
+
+      - name: Recover a missing release for the current version
+        if: steps.compare.outputs.needed != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          current="${{ steps.compare.outputs.current }}"
+          if ! gh release view "v$current" >/dev/null 2>&1; then
+            git tag -f "v$current" HEAD
+            git push -f origin "v$current"
+            gh workflow run linux-desktop.yml --ref master
+          fi
+
+      - name: Rebase the Linux commits onto the new release
+        if: steps.compare.outputs.needed == 'true'
+        run: |
+          target="${{ steps.upstream.outputs.tag }}"
+          target_commit="$(git rev-parse "$target^{commit}")"
+          first="$(git log --reverse --format='%H %ae' master | awk '$2=="butterpurse@gmail.com"{print $1; exit}')"
+          if [ -z "$first" ]; then
+            echo "::error::cannot locate the first Linux commit on master"
+            exit 1
+          fi
+          old_base="$(git rev-parse "$first^")"
+          echo "rebasing commits after $old_base onto $target ($target_commit)"
+          git rebase --onto "$target_commit" "$old_base" master
+
+      - name: Verify the rebased tree
+        if: steps.compare.outputs.needed == 'true'
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm run typecheck
+
+      - name: Push and start the release
+        if: steps.compare.outputs.needed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          version="${{ steps.upstream.outputs.version }}"
+          git push --force-with-lease origin master
+          git tag -f "v$version" HEAD
+          git push -f origin "v$version"
+          gh workflow run linux-desktop.yml --ref master
+
+      - name: Report a blocked sync
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh label create upstream-sync --color FBCA04 --description "Upstream sync blocked" 2>/dev/null || true
+          body="Upstream sync failed for ${{ steps.upstream.outputs.tag || 'the current release' }}. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          existing="$(gh issue list --label upstream-sync --state open --json number --jq '.[0].number' || true)"
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body "$body"
+          else
+            gh issue create --title "Upstream sync blocked: ${{ steps.upstream.outputs.tag || 'unknown' }}" --label upstream-sync --body "$body"
+          fi
