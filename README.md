@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/assets/dolphin-banner.gif" alt="A playful blue dolphin swimming with a beach ball" width="100%">
+</p>
+
 # DeepSeek Harness for Linux
 
 Community Linux packaging for the official [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) desktop app. This is a downstream fork, not an official DeepSeek project.
