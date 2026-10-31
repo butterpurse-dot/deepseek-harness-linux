@@ -15,7 +15,7 @@ const windows = target === 'win-x64'
 const linux = target === 'linux-x64' || target === 'linux-arm64'
 const artifacts = desktopArtifactOutput(paths, { unsigned: values.unsigned, skipNotarization: values['skip-notarization'] }).directory
 const application = windows ? join(artifacts, 'win-unpacked')
-  : linux ? join(artifacts, 'linux-unpacked')
+  : linux ? join(artifacts, target === 'linux-arm64' ? 'linux-arm64-unpacked' : 'linux-unpacked')
     : join(artifacts, target === 'mac-arm64' ? 'mac-arm64' : 'mac', 'DeepSeek Harness.app', 'Contents')
 const resources = join(application, windows || linux ? 'resources' : 'Resources')
 const executable = windows ? join(application, 'DeepSeek Harness.exe')
