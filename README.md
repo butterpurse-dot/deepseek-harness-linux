@@ -2,6 +2,12 @@
   <img src="docs/assets/dolphin-banner.gif" alt="A playful blue dolphin swimming with a beach ball" width="100%">
 </p>
 
+<p align="center">
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
+  <a href="https://github.com/butterpurse-dot/deepseek-harness-linux/releases"><img alt="Latest release" src="https://img.shields.io/github/v/release/butterpurse-dot/deepseek-harness-linux?include_prereleases&label=release"></a>
+  <a href="#platform-support"><img alt="Platform: Linux x64" src="https://img.shields.io/badge/platform-linux%20x64-lightgrey.svg"></a>
+</p>
+
 # DeepSeek Harness for Linux
 
 Community Linux packaging for the official [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) desktop app. This is a downstream fork, not an official DeepSeek project.
@@ -90,6 +96,12 @@ Artifacts land in `apps/desktop/.desktop-build/targets/linux-x64/unsigned-artifa
 This fork tracks `deepseek-ai/deepseek-harness` automatically. A scheduled workflow fetches the newest upstream release tag, rebases the Linux commits onto it, runs `pnpm run typecheck`, pushes `master`, and starts the release build. If the rebase or typecheck fails it opens an `upstream-sync` issue and keeps the last good release.
 
 The Linux changes are limited to the desktop target resolver, the packaging target table, the electron-builder Linux configuration, and the desktop icon/desktop-name wiring. Everything else is upstream code.
+
+## Contributing
+
+Packaging fixes, installer improvements, and distribution reports are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+If this saves you a build, a star helps other Linux users find it.
 
 ## License
 
