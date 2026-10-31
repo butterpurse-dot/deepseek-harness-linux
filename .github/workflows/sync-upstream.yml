@@ -101,7 +101,7 @@ jobs:
           git push --force-with-lease origin master
           git tag -f "v$version" HEAD
           git push -f origin "v$version"
-          gh workflow run linux-desktop.yml --repo "$GH_REPO" --ref "v$current"
+          gh workflow run linux-desktop.yml --repo "$GH_REPO" --ref "v$version"
 
       - name: Report a blocked sync
         if: failure()
