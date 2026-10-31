@@ -1,0 +1,55 @@
+name: Linux packaging bug
+description: Report an install, launch, update, or packaging problem
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Include enough detail to reproduce the problem on a clean machine.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Release tag or output of `dsh-update --check`
+      placeholder: v0.2.2-alpha.2
+    validations:
+      required: true
+  - type: dropdown
+    id: install
+    attributes:
+      label: Install method
+      options:
+        - install-linux.sh
+        - AppImage
+        - .deb
+        - .tar.gz
+        - built from source
+    validations:
+      required: true
+  - type: input
+    id: distro
+    attributes:
+      label: Distribution and architecture
+      description: Output of `cat /etc/os-release` and `uname -m`
+      placeholder: Ubuntu 24.04 x86_64
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened
+      description: Steps to reproduce, actual result, and expected result
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Relevant terminal output, `dsh-update --check`, or app log lines
+      render: shell
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I verified the download with `SHA256SUMS.txt`
+        - label: I searched existing issues and discussions

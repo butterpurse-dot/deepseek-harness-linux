@@ -55,6 +55,8 @@ dsh-update --force   # reinstall the current release
 
 `dsh-update` compares the installed AppImage against the published checksum, so a corrupted or manually modified copy is reinstalled. `.deb` and `.tar.gz` users update by installing the newer release.
 
+arm64 builds are published as a separate `v<version>-arm64` release and update manually; they do not ship an update feed.
+
 ## What is included
 
 - The official Electron desktop application (`apps/desktop`), unmodified except for the Linux target wiring and desktop icon.
@@ -68,7 +70,7 @@ dsh-update --force   # reinstall the current release
 | Linux x64 | AppImage, `.deb`, `.tar.gz` | AppImage only |
 | Linux arm64 | AppImage, `.deb`, `.tar.gz` (separate release) | manual |
 
-**Requirements:** x64 Linux with glibc 2.28+ and about 450 MB of disk. The AppImage needs FUSE 2 (`libfuse2` on Debian/Ubuntu, `fuse2` on Fedora); without FUSE, run it with `--appimage-extract-and-run`.
+**Requirements:** x64 or arm64 Linux with glibc 2.28+ and about 450 MB of disk. The AppImage needs FUSE 2 (`libfuse2` on Debian/Ubuntu, `fuse2` on Fedora); without FUSE, run it with `--appimage-extract-and-run`.
 
 **Known limitations**
 
