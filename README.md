@@ -9,6 +9,10 @@
   <a href="#platform-support"><img alt="Platform: Linux x64" src="https://img.shields.io/badge/platform-linux%20x64-lightgrey.svg"></a>
 </p>
 
+<p align="center">
+  <img src="docs/assets/app-screenshot.png" alt="DeepSeek Harness desktop running on Linux" width="90%">
+</p>
+
 # DeepSeek Harness for Linux
 
 Community Linux packaging for the official [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) desktop app. This is a downstream fork, not an official DeepSeek project.
