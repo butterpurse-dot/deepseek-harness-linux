@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Install DeepSeek Harness for Linux from GitHub Releases.
 #
-#   curl -fsSL https://raw.githubusercontent.com/butterpurse-dot/deepseek-harness-linux/master/scripts/install-linux.sh | bash
+#   curl -fsSL https://github.com/butterpurse-dot/deepseek-harness-linux/releases/latest/download/install-linux.sh | bash
 #
 # Options:
 #   --version <tag>   install a specific release tag (default: newest release)
@@ -120,7 +120,7 @@ EOF
 
 cat > "$PREFIX/bin/dsh-update" <<EOF
 #!/bin/sh
-exec sh -c 'curl -fsSL https://raw.githubusercontent.com/$REPO/master/scripts/install-linux.sh | bash -s -- --update --prefix "$PREFIX" "\$@"' sh "\$@"
+exec sh -c 'curl -fsSL https://github.com/$REPO/releases/latest/download/install-linux.sh | bash -s -- --update --prefix "$PREFIX" "\$@"' sh "\$@"
 EOF
 chmod 0755 "$PREFIX/bin/dsh-update"
 
