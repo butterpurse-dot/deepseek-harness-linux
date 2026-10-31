@@ -2,7 +2,7 @@ name: Sync upstream release
 
 on:
   schedule:
-    - cron: '0 6 * * *'
+    - cron: '7 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -34,15 +34,11 @@ jobs:
           corepack enable
           corepack prepare pnpm@11.28.5 --activate
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
       - name: Find the newest upstream release
         id: upstream
         run: |
-          git remote add upstream https://github.com/deepseek-ai/deepseek-harness.git
-          git fetch --tags --force upstream
-          version="$(git tag -l 'dsh-v*' | sed 's/^dsh-v//' | sort -V | tail -1)"
+          version="$(git ls-remote --tags --refs https://github.com/deepseek-ai/deepseek-harness.git 'dsh-v*' \
+            | sed 's#.*refs/tags/dsh-v##' | sort -V | tail -1)"
           test -n "$version"
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "tag=dsh-v$version" >> "$GITHUB_OUTPUT"
@@ -53,8 +49,10 @@ jobs:
           current="$(node -p "require('./apps/desktop/package.json').version")"
           target="${{ steps.upstream.outputs.version }}"
           echo "current=$current" >> "$GITHUB_OUTPUT"
-          if node -e "process.exit(require('semver').gt(process.argv[1], process.argv[2]) ? 0 : 1)" "$target" "$current"; then
+          newest="$(printf '%s\n%s\n' "$current" "$target" | sort -V | tail -1)"
+          if [ "$newest" = "$target" ] && [ "$target" != "$current" ]; then
             echo "needed=true" >> "$GITHUB_OUTPUT"
+            echo "update available: $current -> $target"
           else
             echo "needed=false" >> "$GITHUB_OUTPUT"
             echo "up to date: $current (newest upstream release: $target)"
@@ -76,6 +74,8 @@ jobs:
         if: steps.compare.outputs.needed == 'true'
         run: |
           target="${{ steps.upstream.outputs.tag }}"
+          git remote add upstream https://github.com/deepseek-ai/deepseek-harness.git
+          git fetch --tags --force upstream
           target_commit="$(git rev-parse "$target^{commit}")"
           first="$(git log --reverse --format='%H %ae' master | awk '$2=="butterpurse@gmail.com"{print $1; exit}')"
           if [ -z "$first" ]; then
@@ -103,6 +103,19 @@ jobs:
           git tag -f "v$version" HEAD
           git push -f origin "v$version"
           gh workflow run linux-desktop.yml --repo "$GH_REPO" --ref "v$version"
+
+      - name: Keep scheduled workflows enabled
+        if: steps.compare.outputs.needed != 'true'
+        run: |
+          last="$(git log -1 --format=%ct -- .github/keepalive 2>/dev/null || echo 0)"
+          now="$(date +%s)"
+          if [ $((now - last)) -gt 2592000 ]; then
+            date -u +%FT%TZ > .github/keepalive
+            git add .github/keepalive
+            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+              commit -m "chore: keep scheduled workflows enabled"
+            git push origin master
+          fi
 
       - name: Report a blocked sync
         if: failure()

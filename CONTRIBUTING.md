@@ -4,6 +4,10 @@ This repository packages the official [DeepSeek Harness](https://github.com/deep
 
 The upstream project does not accept external pull requests. Agent, runtime, plugin, and web UI issues belong in the [upstream discussions](https://github.com/deepseek-ai/deepseek-harness/discussions); this repository only owns the Linux packaging layer.
 
+## Maintenance model
+
+This is a best-effort community build with no SLA and no active maintainer. Upstream releases are synced automatically; issues and pull requests are handled by the community when someone has time. If the sync workflow is blocked, it opens an `upstream-sync` issue and anyone may fix it.
+
 ## Report a problem
 
 Open an issue with:
