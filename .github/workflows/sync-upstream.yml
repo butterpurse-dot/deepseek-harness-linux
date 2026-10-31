@@ -17,6 +17,8 @@ concurrency:
 jobs:
   sync:
     runs-on: ubuntu-24.04
+    env:
+      GH_REPO: ${{ github.repository }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -64,10 +66,10 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           current="${{ steps.compare.outputs.current }}"
-          if ! gh release view "v$current" >/dev/null 2>&1; then
+          if ! gh release view "v$current" --repo "$GH_REPO" >/dev/null 2>&1; then
             git tag -f "v$current" HEAD
             git push -f origin "v$current"
-            gh workflow run linux-desktop.yml --ref master
+            gh workflow run linux-desktop.yml --repo "$GH_REPO" --ref "v$current"
           fi
 
       - name: Rebase the Linux commits onto the new release
@@ -99,18 +101,18 @@ jobs:
           git push --force-with-lease origin master
           git tag -f "v$version" HEAD
           git push -f origin "v$version"
-          gh workflow run linux-desktop.yml --ref master
+          gh workflow run linux-desktop.yml --repo "$GH_REPO" --ref "v$current"
 
       - name: Report a blocked sync
         if: failure()
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh label create upstream-sync --color FBCA04 --description "Upstream sync blocked" 2>/dev/null || true
+          gh label create upstream-sync --repo "$GH_REPO" --color FBCA04 --description "Upstream sync blocked" 2>/dev/null || true
           body="Upstream sync failed for ${{ steps.upstream.outputs.tag || 'the current release' }}. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          existing="$(gh issue list --label upstream-sync --state open --json number --jq '.[0].number' || true)"
+          existing="$(gh issue list --repo "$GH_REPO" --label upstream-sync --state open --json number --jq '.[0].number' || true)"
           if [ -n "$existing" ]; then
-            gh issue comment "$existing" --body "$body"
+            gh issue comment "$existing" --repo "$GH_REPO" --body "$body"
           else
-            gh issue create --title "Upstream sync blocked: ${{ steps.upstream.outputs.tag || 'unknown' }}" --label upstream-sync --body "$body"
+            gh issue create --repo "$GH_REPO" --title "Upstream sync blocked: ${{ steps.upstream.outputs.tag || 'unknown' }}" --label upstream-sync --body "$body"
           fi
