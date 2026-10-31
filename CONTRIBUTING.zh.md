@@ -4,6 +4,17 @@
 
 上游项目目前不接受外部 pull request。Agent、运行时、插件和 Web UI 的问题请前往[上游讨论区](https://github.com/deepseek-ai/deepseek-harness/discussions)；本仓库只负责 Linux 打包层。
 
+## 如何帮忙
+
+- 在你的发行版上测试并反馈结果。
+- 增加打包格式：RPM、Arch PKGBUILD、Nix 或其他安装方式。
+- 改进安装器、更新器或校验逻辑。
+- 翻译文档或落地页。
+- 在 Linux 与 DeepSeek 社区分享这个项目。
+- 如果你想接手维护，请发起讨论。MIT 许可证允许任何人 fork 并继续。
+
+原作者没有义务审查或合并任何内容。
+
 ## 报告问题
 
 请在 issue 中附上：

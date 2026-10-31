@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DeepSeek Harness for Linux — AppImage, .deb, .tar.gz</title>
+<meta name="description" content="Community Linux desktop builds for DeepSeek Harness: the official Electron app as AppImage, .deb, and .tar.gz, with checksums, auto-update, and a one-command installer.">
+<meta property="og:title" content="DeepSeek Harness for Linux">
+<meta property="og:description" content="AppImage, .deb, and .tar.gz builds of the official DeepSeek Harness desktop app, with auto-update and a one-command installer.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://butterpurse-dot.github.io/deepseek-harness-linux/assets/dolphin-banner.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="DeepSeek Harness for Linux">
+<meta name="twitter:description" content="AppImage, .deb, and .tar.gz builds of the official DeepSeek Harness desktop app.">
+<meta name="twitter:image" content="https://butterpurse-dot.github.io/deepseek-harness-linux/assets/dolphin-banner.png">
+<style>
+  :root {
+    --bg: #f5fbff;
+    --surface: #ffffff;
+    --ink: #0d1b2a;
+    --muted: #52677a;
+    --line: #d8e8f3;
+    --blue: #1b6fd6;
+    --blue-soft: #e7f3ff;
+    --code-bg: #0c1a2b;
+    --code-ink: #d7ecff;
+    --radius: 18px;
+    --shadow: 0 18px 50px rgba(20, 80, 140, .10);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #07121d;
+      --surface: #0d1d2c;
+      --ink: #e8f4ff;
+      --muted: #9db4c8;
+      --line: #1d3448;
+      --blue: #6fb4ff;
+      --blue-soft: #10283d;
+      --code-bg: #030a12;
+      --code-ink: #cfe9ff;
+      --shadow: 0 18px 50px rgba(0, 0, 0, .35);
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+  }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { width: min(1080px, calc(100% - 40px)); margin: 0 auto; }
+  header {
+    position: sticky; top: 0; z-index: 10;
+    backdrop-filter: blur(14px);
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    border-bottom: 1px solid var(--line);
+  }
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 20px; padding: 14px 0;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 750; letter-spacing: -.01em; color: var(--ink); }
+  .brand img { width: 30px; height: 30px; border-radius: 8px; }
+  .navlinks { display: flex; gap: 18px; font-size: 14px; }
+  .navlinks a { color: var(--muted); font-weight: 600; }
+  .navlinks a:hover { color: var(--blue); text-decoration: none; }
+  .hero { padding: 54px 0 26px; text-align: center; }
+  .hero h1 {
+    font-size: clamp(34px, 6vw, 62px);
+    line-height: 1.03;
+    letter-spacing: -.045em;
+    margin: 0 auto 18px;
+    max-width: 880px;
+  }
+  .hero p.lead {
+    font-size: clamp(17px, 2.3vw, 21px);
+    color: var(--muted);
+    max-width: 720px;
+    margin: 0 auto 28px;
+  }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-bottom: 26px; }
+  .button {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 20px; border-radius: 999px; font-weight: 700; font-size: 15px;
+    background: var(--blue); color: #fff; border: 1px solid transparent;
+  }
+  .button:hover { text-decoration: none; filter: brightness(1.06); }
+  .button.secondary { background: var(--surface); color: var(--ink); border-color: var(--line); }
+  .button.secondary:hover { border-color: var(--blue); }
+  .install {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--code-bg); color: var(--code-ink);
+    border-radius: 14px; padding: 14px 16px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 13.5px; text-align: left;
+    max-width: 900px; margin: 0 auto 10px;
+    overflow-x: auto;
+  }
+  .install code { white-space: nowrap; flex: 1; }
+  .copy {
+    flex: none; border: 1px solid #2c4a66; background: #12263a; color: #cfe9ff;
+    border-radius: 9px; padding: 7px 11px; font: inherit; cursor: pointer;
+  }
+  .copy:hover { background: #18334c; }
+  .hint { color: var(--muted); font-size: 13px; margin: 0 0 26px; }
+  .banner {
+    width: 100%; display: block; border-radius: var(--radius);
+    border: 1px solid var(--line); box-shadow: var(--shadow);
+  }
+  .shot {
+    width: 100%; display: block; margin: 30px auto 0;
+    border-radius: var(--radius); border: 1px solid var(--line); box-shadow: var(--shadow);
+  }
+  section { padding: 54px 0; }
+  section h2 { font-size: clamp(24px, 3.5vw, 34px); letter-spacing: -.03em; margin: 0 0 10px; }
+  section p.sub { color: var(--muted); margin: 0 0 26px; max-width: 720px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 20px; box-shadow: 0 6px 24px rgba(20, 80, 140, .04);
+  }
+  .card h3 { margin: 0 0 6px; font-size: 17px; letter-spacing: -.01em; }
+  .card p { margin: 0; color: var(--muted); font-size: 14.5px; }
+  .tag {
+    display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--blue); background: var(--blue-soft);
+    border-radius: 999px; padding: 3px 9px; margin-bottom: 10px;
+  }
+  .panel {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 24px; box-shadow: var(--shadow);
+  }
+  .panel + .panel { margin-top: 16px; }
+  .panel h3 { margin: 0 0 8px; font-size: 18px; }
+  .panel p { margin: 0 0 12px; color: var(--muted); }
+  pre {
+    margin: 0; padding: 14px 16px; border-radius: 12px; overflow-x: auto;
+    background: var(--code-bg); color: var(--code-ink);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px;
+  }
+  .note {
+    border-left: 3px solid var(--blue); padding: 2px 0 2px 16px;
+    color: var(--muted); margin: 18px 0 0;
+  }
+  footer { border-top: 1px solid var(--line); padding: 30px 0 46px; color: var(--muted); font-size: 14px; }
+  footer .row { display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; }
+  footer a { color: var(--muted); font-weight: 600; }
+  footer a:hover { color: var(--blue); }
+  @media (max-width: 640px) {
+    .navlinks { display: none; }
+    .install { font-size: 12px; }
+    .hero { padding-top: 38px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <nav>
+      <a class="brand" href="#top"><img src="assets/dolphin-banner.png" alt=""> DeepSeek Harness · Linux</a>
+      <div class="navlinks">
+        <a href="#install">Install</a>
+        <a href="#features">Features</a>
+        <a href="#updates">Updates</a>
+        <a href="https://github.com/butterpurse-dot/deepseek-harness-linux">GitHub</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap">
+    <div class="hero">
+      <h1>DeepSeek Harness,<br>packaged for Linux.</h1>
+      <p class="lead">The official Electron desktop app with its bundled Node, pnpm, and Python runtime — as AppImage, <code>.deb</code>, and <code>.tar.gz</code>. Auto-updating, checksum-verified, one command to install.</p>
+      <div class="actions">
+        <a class="button" href="https://github.com/butterpurse-dot/deepseek-harness-linux/releases/latest">Download</a>
+        <a class="button secondary" href="https://github.com/butterpurse-dot/deepseek-harness-linux">View source</a>
+      </div>
+      <div class="install">
+        <code id="install-command">curl -fsSL https://github.com/butterpurse-dot/deepseek-harness-linux/releases/latest/download/install-linux.sh | bash</code>
+        <button class="copy" type="button" data-copy="#install-command">Copy</button>
+      </div>
+      <p class="hint">Installs to <code>~/.local</code>. x64 and arm64. Community build, not an official DeepSeek project.</p>
+      <img class="banner" src="assets/dolphin-banner.gif" alt="A playful blue dolphin swimming with a beach ball">
+      <img class="shot" src="assets/app-screenshot.png" alt="DeepSeek Harness desktop running on Linux">
+    </div>
+  </div>
+
+  <section id="features">
+    <div class="wrap">
+      <h2>What you get</h2>
+      <p class="sub">The real desktop application, not a browser wrapper. Everything ships in the package, so there is no system Node installation to manage.</p>
+      <div class="grid">
+        <div class="card"><span class="tag">Official app</span><h3>Same Electron app</h3><p>The upstream <code>apps/desktop</code> build, with the agent, plugins, workspaces, and <code>dsh://</code> protocol intact.</p></div>
+        <div class="card"><span class="tag">Formats</span><h3>AppImage, deb, tar.gz</h3><p>Pick a single-file AppImage, a native Debian package, or a portable tarball. x64 and arm64.</p></div>
+        <div class="card"><span class="tag">Updates</span><h3>Automatic on x64</h3><p>AppImages check GitHub Releases and update in place. <code>dsh-update</code> handles the same flow from a terminal.</p></div>
+        <div class="card"><span class="tag">Trust</span><h3>Checksums every time</h3><p>Every release publishes <code>SHA256SUMS.txt</code>. The installer verifies the download before installing.</p></div>
+        <div class="card"><span class="tag">Fresh</span><h3>Follows upstream</h3><p>An hourly workflow rebases the Linux changes onto each new upstream release, tests them, and publishes.</p></div>
+        <div class="card"><span class="tag">Portable</span><h3>Bundled runtime</h3><p>Node, pnpm, and Python travel with the app. No system packages beyond FUSE for the AppImage.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="install">
+    <div class="wrap">
+      <h2>Install</h2>
+      <p class="sub">The one-liner picks the right architecture, verifies the checksum, and adds a desktop entry.</p>
+      <div class="panel">
+        <h3>One command</h3>
+        <pre><code>curl -fsSL https://github.com/butterpurse-dot/deepseek-harness-linux/releases/latest/download/install-linux.sh | bash</code></pre>
+        <p class="note">Requires curl and python3. Installs to <code>~/.local</code>; pass <code>--prefix /usr/local</code> to change it.</p>
+      </div>
+      <div class="panel">
+        <h3>Manual</h3>
+        <pre><code># AppImage
+chmod +x deepseek-harness-*.AppImage
+./deepseek-harness-*.AppImage
+
+# Debian / Ubuntu
+sudo apt install ./deepseek-harness-*.deb
+
+# Portable
+tar -xzf deepseek-harness-*.tar.gz
+./deepseek-harness-*/deepseek-harness</code></pre>
+        <p class="note">AppImage needs FUSE 2 on some distributions: <code>sudo apt install libfuse2</code> or <code>sudo dnf install fuse2</code>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="updates">
+    <div class="wrap">
+      <h2>Updates</h2>
+      <p class="sub">x64 AppImages check GitHub Releases on startup and every six hours. The app asks before downloading and installs after you choose <strong>Install and Restart</strong>.</p>
+      <div class="panel">
+        <h3>From a terminal</h3>
+        <pre><code>dsh-update --check   # is a newer release available?
+dsh-update           # download, verify and install it
+dsh-update --force   # reinstall the current release</code></pre>
+        <p class="note">arm64 builds are published as a separate <code>v&lt;version&gt;-arm64</code> release and update manually.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Community build</h2>
+      <p class="sub">This is a downstream packaging project, not an official DeepSeek product. The upstream desktop app targets macOS and Windows; this repository adds Linux packaging, CI, and installers.</p>
+      <div class="panel">
+        <h3>Maintenance</h3>
+        <p>Best-effort, no SLA, no active maintainer. Upstream releases are synced automatically; issues and pull requests are handled by the community when someone has time. If the sync workflow is blocked, it opens an <code>upstream-sync</code> issue and anyone may fix it.</p>
+        <p><a href="https://github.com/butterpurse-dot/deepseek-harness-linux/blob/master/CONTRIBUTING.md">Contributing</a> · <a href="https://github.com/butterpurse-dot/deepseek-harness-linux/discussions">Discussions</a> · <a href="https://github.com/butterpurse-dot/deepseek-harness-linux/blob/master/LICENSE">MIT License</a></p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap row">
+    <span>DeepSeek Harness for Linux · MIT</span>
+    <span><a href="https://github.com/butterpurse-dot/deepseek-harness-linux">GitHub</a> · <a href="https://github.com/butterpurse-dot/deepseek-harness-linux/releases">Releases</a> · <a href="https://github.com/deepseek-ai/deepseek-harness">Upstream</a></span>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.copy').forEach(button => {
+    button.addEventListener('click', async () => {
+      const target = document.querySelector(button.dataset.copy)
+      if (!target) return
+      try {
+        await navigator.clipboard.writeText(target.textContent.trim())
+        const previous = button.textContent
+        button.textContent = 'Copied'
+        setTimeout(() => { button.textContent = previous }, 1600)
+      } catch {}
+    })
+  })
+</script>
+</body>
+</html>
