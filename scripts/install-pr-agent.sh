@@ -48,8 +48,8 @@ cat > "$UNIT_DIR/dsh-pr-agent.timer" <<'EOF'
 Description=Run the PR review agent every five minutes
 
 [Timer]
-OnBootSec=2min
-OnUnitActiveSec=5min
+OnBootSec=1min
+OnUnitActiveSec=2min
 Persistent=true
 
 [Install]
