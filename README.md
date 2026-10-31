@@ -36,6 +36,7 @@ Manual options, from [Releases](https://github.com/butterpurse-dot/deepseek-harn
 |---|---|
 | AppImage | `chmod +x deepseek-harness-*.AppImage && ./deepseek-harness-*.AppImage` |
 | Debian / Ubuntu | `sudo apt install ./deepseek-harness-*.deb` |
+| Fedora / RHEL | `sudo dnf install ./deepseek-harness-*.rpm` |
 | Portable | `tar -xzf deepseek-harness-*.tar.gz && ./deepseek-harness-*/deepseek-harness` |
 
 Every release ships `SHA256SUMS.txt`. Verify with `sha256sum -c SHA256SUMS.txt`.
@@ -73,8 +74,8 @@ arm64 builds are published as a separate `v<version>-arm64` release and update m
 
 | Platform | Artifacts | Auto-update |
 |---|---|---|
-| Linux x64 | AppImage, `.deb`, `.tar.gz` | AppImage only |
-| Linux arm64 | AppImage, `.deb`, `.tar.gz` (separate release) | manual |
+| Linux x64 | AppImage, `.deb`, `.rpm`, `.tar.gz` | AppImage only |
+| Linux arm64 | AppImage, `.deb`, `.rpm`, `.tar.gz` (separate release) | manual |
 
 **Requirements:** x64 or arm64 Linux with glibc 2.28+ and about 450 MB of disk. The AppImage needs FUSE 2 (`libfuse2` on Debian/Ubuntu, `fuse2` on Fedora); without FUSE, run it with `--appimage-extract-and-run`.
 
