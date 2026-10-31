@@ -1,23 +1,42 @@
 # Contributing
 
-English | [中文](CONTRIBUTING.zh.md)
+This repository packages the official [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) desktop app for Linux. Contributions to the packaging, installer, CI, and documentation are welcome.
 
-Thank you for your interest in contributing to DeepSeek Harness!
+The upstream project does not accept external pull requests. Agent, runtime, plugin, and web UI issues belong in the [upstream discussions](https://github.com/deepseek-ai/deepseek-harness/discussions); this repository only owns the Linux packaging layer.
 
-We deeply believe in the power of open source communities, and that belief has shaped this project from the very beginning.
+## Report a problem
 
-DeepSeek Harness is still at an early stage and under active development. We are sorry that we cannot accept external pull requests at the moment. However, contributing code to this repository is far from the only way to help. There are many other ways to get involved:
+Open an issue with:
 
-- Identify and report issues or bugs in GitHub Discussions:
-  - Upvote discussions that you would like to bring to the team's attention. We are a very small team and may not be able to reply to every post, but we monitor them and consider them when allocating resources.
-- Contribute to the ecosystem:
-  - Create a plugin that excites you and share it with others:
-    - Associate your GitHub project with the `dsh-plugin` topic to help others discover your plugin.
-  - Write blog posts and how-to guides about DeepSeek Harness.
-  - Answer questions and help other members of the community.
+- distribution and version (`cat /etc/os-release`),
+- how the app was installed (installer, AppImage, `.deb`, `.tar.gz`),
+- the output of `dsh-update --check`,
+- the relevant lines from the app log or terminal.
 
-DeepSeek Harness is designed to be deeply customizable. We do not believe that packages in the official repository are inherently more important than packages created by the community. You may consider this repository an idea, an official showcase, and a source of inspiration, but not a mandate from us.
+## Change the packaging
 
-We have already seen exciting projects emerge from the community, and we hope to see the ecosystem continue to grow in its own directions.
+```sh
+git clone https://github.com/butterpurse-dot/deepseek-harness-linux
+cd deepseek-harness-linux
+corepack enable
+corepack prepare pnpm@11.28.5 --activate
+pnpm install --frozen-lockfile
+pnpm run build
+pnpm --filter @deepseek-ai/dsh-desktop run package:linux:x64 -- --unsigned
+```
 
-Into the unknown.
+Artifacts land in `apps/desktop/.desktop-build/targets/linux-x64/unsigned-artifacts/`.
+
+Open a pull request against `master`. Keep changes small: the scheduled sync rebases the Linux commit series onto each upstream release, so edits should stay inside the Linux packaging surface (target resolver, `package-target.ts`, electron-builder configuration, desktop icon/desktop name, installer, workflows, docs).
+
+## Rebuild the banner
+
+```sh
+python3 scripts/generate-dolphin-banner.py
+```
+
+Writes `docs/assets/dolphin-banner.gif` and `.png`.
+
+## License
+
+By contributing you agree that your changes are licensed under the MIT License in [LICENSE](LICENSE).
