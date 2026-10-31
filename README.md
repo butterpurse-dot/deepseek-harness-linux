@@ -7,6 +7,7 @@
   <a href="https://github.com/butterpurse-dot/deepseek-harness-linux/releases"><img alt="Latest release" src="https://img.shields.io/github/v/release/butterpurse-dot/deepseek-harness-linux?include_prereleases&label=release"></a>
   <a href="https://github.com/butterpurse-dot/deepseek-harness-linux/actions/workflows/sync-upstream.yml"><img alt="Upstream sync" src="https://github.com/butterpurse-dot/deepseek-harness-linux/actions/workflows/sync-upstream.yml/badge.svg"></a>
   <a href="#platform-support"><img alt="Platform: Linux x64" src="https://img.shields.io/badge/platform-linux%20x64-lightgrey.svg"></a>
+  <a href="https://butterpurse-dot.github.io/deepseek-harness-linux/"><img alt="Website" src="https://img.shields.io/badge/website-live-1b6fd6.svg"></a>
 </p>
 
 <p align="center">
