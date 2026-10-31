@@ -44,6 +44,16 @@ workflow is dispatched with a tag ref. It:
 separate `v<version>-arm64` release. arm64 builds have no update feed, so users
 update by downloading the next arm64 release.
 
+## External pull requests
+
+`track-external-prs.yml` runs every six hours and keeps the **External PR review
+queue** issue updated with comments from reviewers on pull requests opened from
+this account in other repositories. Ask the agent to check that issue and it will
+address the comments. The queue excludes repositories owned by the same account.
+
+The open awesome-list pull requests are free curated-list submissions, not paid
+promotion. Close them if they are unwanted; the forks exist only for those PRs.
+
 ## Installer
 
 `scripts/install-linux.sh` selects the x64 or arm64 release by architecture,
