@@ -222,7 +222,8 @@
     "verify-provider-data": "tsx packages/llm/llm-pi-ai/scripts/gen-provider-data.ts --check",
     "verify-product-use": "tsx scripts/verify-product-use.ts",
     "package:desktop:linux:x64": "pnpm --filter @deepseek-ai/dsh-desktop run package:linux:x64",
-    "package:desktop:linux:arm64": "pnpm --filter @deepseek-ai/dsh-desktop run package:linux:arm64"
+    "package:desktop:linux:arm64": "pnpm --filter @deepseek-ai/dsh-desktop run package:linux:arm64",
+    "test:linux": "vitest run apps/desktop/tests/desktop-build-paths.spec.ts apps/desktop/tests/linux-packaging.spec.ts"
   },
   "devDependencies": {
     "@deepseek-ai/dsh-hooks-claude-code": "workspace:*",
