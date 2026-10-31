@@ -1,23 +1,42 @@
-# 贡献
+# 贡献指南
 
-[English](CONTRIBUTING.md) | 中文
+本仓库为官方 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 桌面端提供 Linux 打包。欢迎提交打包、安装器、CI 和文档相关的改动。
 
-感谢你愿意为 DeepSeek Harness 作出贡献！
+上游项目目前不接受外部 pull request。Agent、运行时、插件和 Web UI 的问题请前往[上游讨论区](https://github.com/deepseek-ai/deepseek-harness/discussions)；本仓库只负责 Linux 打包层。
 
-我们深信开源社区的力量，这份信念从项目最初就塑造着 DeepSeek Harness。
+## 报告问题
 
-DeepSeek Harness 仍处于早期阶段，并在积极开发中。很抱歉，我们目前无法接受外部 PR（Pull Request）。不过，贡献代码远非帮助本仓库建设的唯一途径。你还可以通过许多其他方式参与进来：
+请在 issue 中附上：
 
-- 在 GitHub Discussions 中发现并报告问题或 bug：
-  - 为你希望引起团队关注的讨论投票。我们的团队规模很小，可能无法回复每个帖子，但我们会持续关注，并在分配资源时将这些讨论纳入考虑。
-- 为生态系统作出贡献：
-  - 创建令你感兴趣的插件，并分享给其他人：
-    - 为你的 GitHub 项目添加 `dsh-plugin` 话题，让其他人更容易找到你的插件。
-  - 撰写有关 DeepSeek Harness 的博客文章和操作指南。
-  - 回答问题并帮助其他社区成员。
+- 发行版与版本（`cat /etc/os-release`）；
+- 安装方式（安装脚本、AppImage、`.deb`、`.tar.gz`）；
+- `dsh-update --check` 的输出；
+- 应用日志或终端中的相关行。
 
-DeepSeek Harness 的设计支持深度定制。我们并不认为官方仓库中的包天然就比社区开发的包更重要。你可以将本仓库看作一种理念、一份官方示例以及一处灵感来源，而不是我们要求社区遵循的方向。
+## 修改打包
 
-我们已经看到社区中涌现出令人期待的项目，也希望生态系统继续沿着自己的方向发展。
+```sh
+git clone https://github.com/butterpurse-dot/deepseek-harness-linux
+cd deepseek-harness-linux
+corepack enable
+corepack prepare pnpm@11.28.5 --activate
+pnpm install --frozen-lockfile
+pnpm run build
+pnpm --filter @deepseek-ai/dsh-desktop run package:linux:x64 -- --unsigned
+```
 
-探索未至之境。
+产物位于 `apps/desktop/.desktop-build/targets/linux-x64/unsigned-artifacts/`。
+
+请向 `master` 提交 pull request。改动尽量小：定时同步会把 Linux 提交系列 rebase 到每个上游 release 上，因此修改应限制在 Linux 打包范围内（target resolver、`package-target.ts`、electron-builder 配置、桌面图标/desktop name、安装器、workflow、文档）。
+
+## 重新生成横幅
+
+```sh
+python3 scripts/generate-dolphin-banner.py
+```
+
+生成 `docs/assets/dolphin-banner.gif` 和 `.png`。
+
+## 许可证
+
+提交即表示你同意以 [LICENSE](LICENSE) 中的 MIT 许可证授权你的改动。
