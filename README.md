@@ -41,12 +41,20 @@ Installed AppImages check GitHub Releases through `electron-updater`. The app as
 - The bundled Node, pnpm, and Python runtime, so no system Node installation is required.
 - The official agent, plugin, workspace, and `dsh://` protocol behaviour.
 
-## Status
+## Platform support
 
-- **x64** builds are published.
-- Builds are **unsigned**; there is no Linux code-signing story upstream yet. Checksums are published for every artifact.
-- `arm64` is wired into the build target but is not published yet.
-- Office document conversion uses the WASM engine on Linux, matching upstream's fallback.
+| Platform | Artifacts | Auto-update |
+|---|---|---|
+| Linux x64 | AppImage, `.deb`, `.tar.gz` | AppImage only |
+| Linux arm64 | target implemented, no published build | — |
+
+**Requirements:** x64 Linux with glibc 2.28+ and about 450 MB of disk. The AppImage needs FUSE 2 (`libfuse2` on Debian/Ubuntu, `fuse2` on Fedora); without FUSE, run it with `--appimage-extract-and-run`.
+
+**Known limitations**
+
+- Builds are unsigned, so the desktop may warn on first launch. Every release ships `SHA256SUMS.txt`; verify before running.
+- Office conversion uses the WASM engine because upstream publishes no native Linux LibreOfficeKit package.
+- The updater only moves forward. To go back to an older release, download that tag and reinstall it.
 
 ## Build from source
 
