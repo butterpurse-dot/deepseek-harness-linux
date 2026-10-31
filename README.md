@@ -13,7 +13,7 @@ The upstream desktop app is packaged for macOS and Windows only. This fork adds 
 One command (installs to `~/.local`):
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/butterpurse-dot/deepseek-harness-linux/master/scripts/install-linux.sh | bash
+curl -fsSL https://github.com/butterpurse-dot/deepseek-harness-linux/releases/latest/download/install-linux.sh | bash
 ```
 
 Then run `deepseek-harness` or open **DeepSeek Harness** from your application menu.

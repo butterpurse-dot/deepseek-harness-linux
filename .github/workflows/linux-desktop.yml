@@ -62,5 +62,5 @@ jobs:
           version="$(node -p "require('./apps/desktop/package.json').version")"
           tag="v$version"
           artifacts="apps/desktop/.desktop-build/targets/linux-x64/unsigned-artifacts"
-          gh release upload "$tag" "$artifacts/SHA256SUMS.txt" --clobber
+          gh release upload "$tag" "$artifacts/SHA256SUMS.txt" scripts/install-linux.sh --clobber
           gh release edit "$tag" --draft=false
