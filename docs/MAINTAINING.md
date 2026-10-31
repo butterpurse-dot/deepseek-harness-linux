@@ -46,10 +46,13 @@ update by downloading the next arm64 release.
 
 ## External pull requests
 
-`track-external-prs.yml` runs every six hours and keeps the **External PR review
-queue** issue updated with comments from reviewers on pull requests opened from
-this account in other repositories. Ask the agent to check that issue and it will
-address the comments. The queue excludes repositories owned by the same account.
+The local `dsh-pr-agent` systemd timer runs every five minutes. It updates the
+**External PR review queue** issue with comments from reviewers on pull requests
+opened from this account in other repositories, then invokes `dsh --profile
+headless` for each new comment, pushes the change to the PR fork, and posts the
+reply. Ask the agent to check that issue if you want a summary; the timer handles
+the comments without email. The queue excludes repositories owned by the same
+account.
 
 The open awesome-list pull requests are free curated-list submissions, not paid
 promotion. Close them if they are unwanted; the forks exist only for those PRs.
