@@ -37,7 +37,16 @@ sudo dnf install fuse2           # Fedora / RHEL
 
 ## Updates
 
-Installed AppImages check GitHub Releases through `electron-updater`. The app asks before downloading; installation happens on the next restart. `.deb` and `.tar.gz` users update by installing the newer release.
+The app checks GitHub Releases on startup and every six hours. When a newer release exists, a badge appears in the sidebar and the settings page offers the update dialog: it asks before downloading, then installs after **Install and Restart**.
+
+From a terminal, the installed `dsh-update` command does the same fetch/verify/install flow:
+
+```sh
+dsh-update --check   # report whether a newer release exists
+dsh-update           # download, verify SHA256SUMS and replace the installed AppImage
+```
+
+`dsh-update` compares the installed AppImage against the published checksum, so a corrupted or manually modified copy is reinstalled. `.deb` and `.tar.gz` users update by installing the newer release.
 
 ## What is included
 
