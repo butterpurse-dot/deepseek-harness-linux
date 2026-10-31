@@ -87,7 +87,9 @@ Artifacts land in `apps/desktop/.desktop-build/targets/linux-x64/unsigned-artifa
 
 ## Syncing with upstream
 
-This fork tracks `deepseek-ai/deepseek-harness`. The Linux changes are limited to the desktop target resolver, the packaging target table, the electron-builder Linux configuration, and the desktop icon/desktop-name wiring. Everything else is upstream code.
+This fork tracks `deepseek-ai/deepseek-harness` automatically. A scheduled workflow fetches the newest upstream release tag, rebases the Linux commits onto it, runs `pnpm run typecheck`, pushes `master`, and starts the release build. If the rebase or typecheck fails it opens an `upstream-sync` issue and keeps the last good release.
+
+The Linux changes are limited to the desktop target resolver, the packaging target table, the electron-builder Linux configuration, and the desktop icon/desktop-name wiring. Everything else is upstream code.
 
 ## License
 
