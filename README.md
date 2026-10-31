@@ -50,6 +50,7 @@ From a terminal, the installed `dsh-update` command does the same fetch/verify/i
 ```sh
 dsh-update --check   # report whether a newer release exists
 dsh-update           # download, verify SHA256SUMS and replace the installed AppImage
+dsh-update --force   # reinstall the current release
 ```
 
 `dsh-update` compares the installed AppImage against the published checksum, so a corrupted or manually modified copy is reinstalled. `.deb` and `.tar.gz` users update by installing the newer release.

@@ -8,12 +8,14 @@
 #   --prefix <dir>    install prefix (default: ~/.local)
 #   --update          install only when a newer release exists
 #   --check           report whether an update is available, install nothing
+#   --force           reinstall even when the installed copy is current
 set -euo pipefail
 
 REPO="butterpurse-dot/deepseek-harness-linux"
 PREFIX="${PREFIX:-$HOME/.local}"
 VERSION=""
 MODE="install"
+FORCE=0
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -21,6 +23,7 @@ while [ $# -gt 0 ]; do
     --prefix) PREFIX="${2:?--prefix requires a directory}"; shift 2 ;;
     --update) MODE="update"; shift ;;
     --check) MODE="check"; shift ;;
+    --force) FORCE=1; shift ;;
     -h|--help) sed -n '2,10p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) echo "install: unknown argument $1" >&2; exit 2 ;;
   esac
@@ -38,7 +41,7 @@ api="https://api.github.com/repos/$REPO/releases"
 if [ -n "$VERSION" ]; then
   release_json="$(curl -fsSL "$api/tags/$VERSION")"
 else
-  release_json="$(curl -fsSL "$api?per_page=1" | python3 -c 'import json,sys; print(json.dumps(json.load(sys.stdin)[0]))')"
+  release_json="$(curl -fsSL "$api/latest")"
 fi
 
 tag="$(printf '%s' "$release_json" | python3 -c 'import json,sys; print(json.load(sys.stdin)["tag_name"])')"
@@ -69,7 +72,7 @@ if [ "$MODE" = "check" ]; then
   exit 0
 fi
 
-if [ "$MODE" = "update" ] && [ "$current" = "$tag" ] && [ "$healthy" = "1" ]; then
+if [ "$MODE" = "update" ] && [ "$FORCE" = "0" ] && [ "$current" = "$tag" ] && [ "$healthy" = "1" ]; then
   echo "up to date: $tag"
   exit 0
 fi
