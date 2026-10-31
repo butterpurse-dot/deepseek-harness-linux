@@ -51,6 +51,35 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pnpm run package:linux:x64 -- --unsigned --publish
 
+      - name: Run Linux packaging tests
+        run: pnpm run test:linux
+
+      - name: Smoke-test the AppImage
+        working-directory: apps/desktop/.desktop-build/targets/linux-x64/unsigned-artifacts
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb
+          appimage="$(ls *.AppImage | head -1)"
+          chmod +x "$appimage"
+          timeout 150 xvfb-run -a env DSH_HOME=/tmp/dsh-smoke-home "./$appimage" \
+            --appimage-extract-and-run --no-sandbox --user-data-dir=/tmp/dsh-smoke-userdata \
+            > /tmp/appimage.log 2>&1 &
+          pid=$!
+          ready=0
+          for _ in $(seq 1 60); do
+            if grep -q "dsh web: http" /tmp/appimage.log; then ready=1; break; fi
+            sleep 2
+          done
+          kill "$pid" 2>/dev/null || true
+          pkill -f "dsh-smoke-userdata" 2>/dev/null || true
+          pkill -f "appimage-extract-and-run" 2>/dev/null || true
+          wait "$pid" 2>/dev/null || true
+          if [ "$ready" != "1" ]; then
+            cat /tmp/appimage.log
+            exit 1
+          fi
+          echo "AppImage started and served the host"
+
       - name: Checksums
         working-directory: apps/desktop/.desktop-build/targets/linux-x64/unsigned-artifacts
         run: sha256sum *.AppImage *.deb *.tar.gz > SHA256SUMS.txt

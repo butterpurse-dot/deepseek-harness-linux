@@ -91,6 +91,7 @@ jobs:
         run: |
           pnpm install --frozen-lockfile
           pnpm run typecheck
+          pnpm run test:linux
 
       - name: Push and start the release
         if: steps.compare.outputs.needed == 'true'
