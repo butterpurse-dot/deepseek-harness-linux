@@ -19,7 +19,12 @@ manually. It:
 
 If the rebase or verification fails, the workflow opens or updates an
 `upstream-sync` issue and leaves the last release untouched. Fix the conflict
-locally, push the corrected commit, then re-run the sync.
+locally, push the corrected commit, then re-run the sync. The project has no
+active maintainer, so a blocked sync needs a community contributor.
+
+The workflow also writes `.github/keepalive` about once a month. That commit
+keeps GitHub from disabling scheduled workflows after 60 days without
+repository activity.
 
 Do not merge upstream `master` into this branch by hand unless the rebase cannot
 be repaired; the workflow assumes a linear series of Linux commits on top of an
