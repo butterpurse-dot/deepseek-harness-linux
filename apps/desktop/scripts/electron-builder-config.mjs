@@ -253,6 +253,9 @@ export function createElectronBuilderConfig(
       },
       target: ['nsis'],
     },
+    rpm: {
+      packageName: 'deepseek-harness',
+    },
     linux: {
       icon: fileURLToPath(new URL('../resources/icon.png', import.meta.url)),
       executableName: 'deepseek-harness',
@@ -260,7 +263,7 @@ export function createElectronBuilderConfig(
       category: 'Development',
       maintainer: 'Infinite Foundation <butterpurse@gmail.com>',
       synopsis: 'DeepSeek Harness desktop client',
-      target: ['AppImage', 'deb', 'tar.gz'],
+      target: ['AppImage', 'deb', 'tar.gz', 'rpm'],
     },
     nsis: {
       uninstallDisplayName: '${productName}',
