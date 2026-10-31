@@ -176,7 +176,7 @@
   <div class="wrap">
     <div class="hero">
       <h1>DeepSeek Harness,<br>packaged for Linux.</h1>
-      <p class="lead">The official Electron desktop app with its bundled Node, pnpm, and Python runtime — as AppImage, <code>.deb</code>, and <code>.tar.gz</code>. Auto-updating, checksum-verified, one command to install.</p>
+      <p class="lead">The official Electron desktop app with its bundled Node, pnpm, and Python runtime — as AppImage, <code>.deb</code>, <code>.rpm</code>, and <code>.tar.gz</code>. Auto-updating, checksum-verified, one command to install.</p>
       <div class="actions">
         <a class="button" href="https://github.com/butterpurse-dot/deepseek-harness-linux/releases/latest">Download</a>
         <a class="button secondary" href="https://github.com/butterpurse-dot/deepseek-harness-linux">View source</a>
@@ -197,7 +197,7 @@
       <p class="sub">The real desktop application, not a browser wrapper. Everything ships in the package, so there is no system Node installation to manage.</p>
       <div class="grid">
         <div class="card"><span class="tag">Official app</span><h3>Same Electron app</h3><p>The upstream <code>apps/desktop</code> build, with the agent, plugins, workspaces, and <code>dsh://</code> protocol intact.</p></div>
-        <div class="card"><span class="tag">Formats</span><h3>AppImage, deb, tar.gz</h3><p>Pick a single-file AppImage, a native Debian package, or a portable tarball. x64 and arm64.</p></div>
+        <div class="card"><span class="tag">Formats</span><h3>AppImage, deb, rpm, tar.gz</h3><p>Pick a single-file AppImage, a native Debian or Fedora package, or a portable tarball. x64 and arm64.</p></div>
         <div class="card"><span class="tag">Updates</span><h3>Automatic on x64</h3><p>AppImages check GitHub Releases and update in place. <code>dsh-update</code> handles the same flow from a terminal.</p></div>
         <div class="card"><span class="tag">Trust</span><h3>Checksums every time</h3><p>Every release publishes <code>SHA256SUMS.txt</code>. The installer verifies the download before installing.</p></div>
         <div class="card"><span class="tag">Fresh</span><h3>Follows upstream</h3><p>An hourly workflow rebases the Linux changes onto each new upstream release, tests them, and publishes.</p></div>
@@ -223,6 +223,9 @@ chmod +x deepseek-harness-*.AppImage
 
 # Debian / Ubuntu
 sudo apt install ./deepseek-harness-*.deb
+
+# Fedora / RHEL
+sudo dnf install ./deepseek-harness-*.rpm
 
 # Portable
 tar -xzf deepseek-harness-*.tar.gz

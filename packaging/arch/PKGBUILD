@@ -1,0 +1,53 @@
+# Maintainer: Infinite Foundation <butterpurse@gmail.com>
+# Build with: makepkg -si
+# Update: bump pkgver/_tag, run `updpkgsums`, then `makepkg -si`.
+pkgname=deepseek-harness-bin
+pkgver=0.2.2alpha2
+pkgrel=1
+_tag=v0.2.2-alpha.2
+pkgdesc="DeepSeek Harness desktop app packaged as an AppImage"
+arch=('x86_64' 'aarch64')
+url="https://github.com/butterpurse-dot/deepseek-harness-linux"
+license=('MIT')
+depends=('fuse2')
+provides=('deepseek-harness')
+conflicts=('deepseek-harness')
+options=(!strip)
+
+source=("deepseek-harness.png::https://raw.githubusercontent.com/butterpurse-dot/deepseek-harness-linux/master/apps/desktop/resources/icon.png")
+source_x86_64=("deepseek-harness-${_tag}-linux-x86_64-unsigned.AppImage::https://github.com/butterpurse-dot/deepseek-harness-linux/releases/download/${_tag}/deepseek-harness-${_tag}-linux-x86_64-unsigned.AppImage")
+source_aarch64=("deepseek-harness-${_tag}-linux-arm64-unsigned.AppImage::https://github.com/butterpurse-dot/deepseek-harness-linux/releases/download/${_tag}/deepseek-harness-${_tag}-linux-arm64-unsigned.AppImage")
+sha256sums=('SKIP')
+sha256sums_x86_64=('SKIP')
+sha256sums_aarch64=('SKIP')
+
+package() {
+  local appimage
+  case "$CARCH" in
+    x86_64) appimage="deepseek-harness-${_tag}-linux-x86_64-unsigned.AppImage" ;;
+    aarch64) appimage="deepseek-harness-${_tag}-linux-arm64-unsigned.AppImage" ;;
+    *) error "unsupported architecture: $CARCH" ;;
+  esac
+
+  install -Dm755 "$srcdir/$appimage" "$pkgdir/opt/deepseek-harness/deepseek-harness.AppImage"
+  install -d "$pkgdir/usr/bin"
+  ln -s /opt/deepseek-harness/deepseek-harness.AppImage "$pkgdir/usr/bin/deepseek-harness"
+  install -Dm644 "$srcdir/deepseek-harness.png" \
+    "$pkgdir/usr/share/icons/hicolor/512x512/apps/deepseek-harness.png"
+
+  install -d "$pkgdir/usr/share/applications"
+  cat > "$pkgdir/usr/share/applications/deepseek-harness.desktop" <<'EOF'
+[Desktop Entry]
+Type=Application
+Name=DeepSeek Harness
+Comment=DeepSeek Harness desktop client
+Exec=/opt/deepseek-harness/deepseek-harness.AppImage %U
+Icon=deepseek-harness
+Terminal=false
+Categories=Development;
+StartupNotify=true
+StartupWMClass=dsh-desktop
+MimeType=x-scheme-handler/dsh;
+EOF
+  chmod 644 "$pkgdir/usr/share/applications/deepseek-harness.desktop"
+}
