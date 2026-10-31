@@ -8,6 +8,17 @@ The upstream project does not accept external pull requests. Agent, runtime, plu
 
 This is a best-effort community build with no SLA and no active maintainer. Upstream releases are synced automatically; issues and pull requests are handled by the community when someone has time. If the sync workflow is blocked, it opens an `upstream-sync` issue and anyone may fix it.
 
+## Ways to help
+
+- Test on your distribution and report what works or breaks.
+- Add packaging formats: RPM, Arch PKGBUILD, Nix, or another installer.
+- Improve the installer, updater, or checksum verification.
+- Translate the docs or the landing page.
+- Share the project where Linux and DeepSeek users gather.
+- If you want to take over maintenance, open a discussion. The MIT license lets anyone fork and continue.
+
+There is no expectation that the original author will review or merge anything.
+
 ## Report a problem
 
 Open an issue with:
