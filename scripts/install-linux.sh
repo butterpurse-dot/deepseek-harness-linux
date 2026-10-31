@@ -31,7 +31,8 @@ done
 
 case "$(uname -m)" in
   x86_64|amd64) ARCH=x64 ;;
-  *) echo "install: only x64 builds are published right now (detected $(uname -m))" >&2; exit 1 ;;
+  aarch64|arm64) ARCH=arm64 ;;
+  *) echo "install: unsupported architecture $(uname -m)" >&2; exit 1 ;;
 esac
 
 command -v curl >/dev/null || { echo "install: curl is required" >&2; exit 1; }
@@ -39,9 +40,25 @@ command -v python3 >/dev/null || { echo "install: python3 is required" >&2; exit
 
 api="https://api.github.com/repos/$REPO/releases"
 if [ -n "$VERSION" ]; then
-  release_json="$(curl -fsSL "$api/tags/$VERSION")"
+  base="${VERSION#v}"
+  base="${base%-arm64}"
+  tag="v$base"
+  [ "$ARCH" = arm64 ] && tag="$tag-arm64"
+  release_json="$(curl -fsSL "$api/tags/$tag")"
 else
-  release_json="$(curl -fsSL "$api/latest")"
+  tags="$(curl -fsSL "$api?per_page=100" | python3 -c '
+import json,sys
+for release in json.load(sys.stdin):
+    if not release["draft"] and not release["prerelease"]:
+        print(release["tag_name"])
+')"
+  if [ "$ARCH" = arm64 ]; then
+    tag="$(printf '%s\n' "$tags" | grep -- '-arm64$' | sort -V | tail -1)"
+  else
+    tag="$(printf '%s\n' "$tags" | grep -v -- '-arm64$' | sort -V | tail -1)"
+  fi
+  [ -n "$tag" ] || { echo "install: no published $ARCH release found" >&2; exit 1; }
+  release_json="$(curl -fsSL "$api/tags/$tag")"
 fi
 
 tag="$(printf '%s' "$release_json" | python3 -c 'import json,sys; print(json.load(sys.stdin)["tag_name"])')"

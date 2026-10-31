@@ -66,7 +66,7 @@ dsh-update --force   # reinstall the current release
 | Platform | Artifacts | Auto-update |
 |---|---|---|
 | Linux x64 | AppImage, `.deb`, `.tar.gz` | AppImage only |
-| Linux arm64 | target implemented, no published build | — |
+| Linux arm64 | AppImage, `.deb`, `.tar.gz` (separate release) | manual |
 
 **Requirements:** x64 Linux with glibc 2.28+ and about 450 MB of disk. The AppImage needs FUSE 2 (`libfuse2` on Debian/Ubuntu, `fuse2` on Fedora); without FUSE, run it with `--appimage-extract-and-run`.
 
