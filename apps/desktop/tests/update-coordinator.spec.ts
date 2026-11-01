@@ -257,3 +257,9 @@ it('keeps a stable-version nightly installation on nightly and rejects prereleas
   expect((await latest.coordinator.check()).phase).toBe('error')
   expect(latest.downloadUpdate).not.toHaveBeenCalled()
 })
+
+it('lets a prerelease latest installation update to a newer prerelease', async () => {
+  const latest = fixture('latest', '1.1.0-alpha.1')
+  expect((await latest.coordinator.check()).phase).toBe('available')
+  expect(latest.coordinator.state).toMatchObject({ phase: 'available', version: '1.1.0-rc.2' })
+})

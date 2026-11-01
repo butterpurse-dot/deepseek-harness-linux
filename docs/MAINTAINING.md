@@ -77,10 +77,21 @@ tag no longer exists, restore it from the commit recorded in the release notes,
 push it, and dispatch. The updater only moves forward, so users must reinstall
 an older release manually.
 
+## Linux package checks
+
+The AppImage is the primary artifact. The `.deb` is installed and booted in an
+Ubuntu 24.04 container; the `.rpm` is installed and booted in a Fedora
+container; and `packaging/arch/PKGBUILD` is built and booted in an Arch
+container with `APPIMAGE_EXTRACT_AND_RUN=1` (containers usually lack
+`/dev/fuse`). The package dependency lists include `libasound2` (or
+`libasound2t64`) and `alsa-lib`; without them Electron fails on a minimal
+install even though desktop systems already provide them.
+
 ## Known limitations
 
 - Builds are unsigned. Every release publishes checksums.
 - arm64 has no auto-update feed.
-- The in-app download/install path has not been exercised against a newer
-  release in CI; the feed check and the terminal fetch/verify/install path are
-  tested.
+- The in-app download/install path was exercised locally against a generic feed
+  with a stub AppImage: the app checked the feed, downloaded the file, verified
+  its SHA-512, replaced the `APPIMAGE` target, and spawned it. CI still does not
+  publish a newer real release to test a full new-version boot.
