@@ -1,5 +1,7 @@
 # Maintaining this fork
 
+English | [中文](MAINTAINING.zh.md)
+
 This repository is a downstream Linux packaging fork of
 [deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness).
 It is a standalone repository, not a GitHub fork, so it can appear in search.
