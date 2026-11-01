@@ -8,6 +8,8 @@
 <meta property="og:title" content="DeepSeek Harness for Linux">
 <meta property="og:description" content="AppImage, deb, rpm, and tar.gz builds of the official DeepSeek Harness desktop app, with auto-update and a one-command installer.">
 <meta property="og:type" content="website">
+<link rel="alternate" hreflang="en" href="https://butterpurse-dot.github.io/deepseek-harness-linux/">
+<link rel="alternate" hreflang="zh-CN" href="https://butterpurse-dot.github.io/deepseek-harness-linux/index.zh.html">
 <meta property="og:image" content="https://butterpurse-dot.github.io/deepseek-harness-linux/assets/social-preview.png">
 <meta property="og:image:width" content="1280">
 <meta property="og:image:height" content="640">
@@ -169,6 +171,7 @@
         <a href="#features">Features</a>
         <a href="#updates">Updates</a>
         <a href="https://github.com/butterpurse-dot/deepseek-harness-linux">GitHub</a>
+        <a href="index.zh.html">中文</a>
       </div>
     </nav>
   </div>
@@ -200,7 +203,7 @@
       <div class="grid">
         <div class="card"><span class="tag">Official app</span><h3>Same Electron app</h3><p>The upstream <code>apps/desktop</code> build, with the agent, plugins, workspaces, and <code>dsh://</code> protocol intact.</p></div>
         <div class="card"><span class="tag">Formats</span><h3>AppImage, deb, rpm, tar.gz</h3><p>Pick a single-file AppImage, a native Debian or Fedora package, or a portable tarball. x64 and arm64.</p></div>
-        <div class="card"><span class="tag">Updates</span><h3>Automatic on x64</h3><p>AppImages check GitHub Releases and update in place. <code>dsh-update</code> handles the same flow from a terminal.</p></div>
+        <div class="card"><span class="tag">Updates</span><h3>Automatic on x64 + arm64</h3><p>AppImages check GitHub Releases and update in place. <code>dsh-update</code> handles the same flow from a terminal.</p></div>
         <div class="card"><span class="tag">Trust</span><h3>Checksums every time</h3><p>Every release publishes <code>SHA256SUMS.txt</code>. The installer verifies the download before installing.</p></div>
         <div class="card"><span class="tag">Fresh</span><h3>Follows upstream</h3><p>An hourly workflow rebases the Linux changes onto each new upstream release, tests them, and publishes.</p></div>
         <div class="card"><span class="tag">Portable</span><h3>Bundled runtime</h3><p>Node, pnpm, and Python travel with the app. No system packages beyond FUSE for the AppImage.</p></div>
@@ -240,7 +243,7 @@ tar -xzf deepseek-harness-*.tar.gz
   <section id="updates">
     <div class="wrap">
       <h2>Updates</h2>
-      <p class="sub">x64 AppImages check GitHub Releases on startup and every six hours. The app asks before downloading and installs after you choose <strong>Install and Restart</strong>.</p>
+      <p class="sub">x64 and arm64 AppImages check GitHub Releases on startup and every six hours. The app asks before downloading and installs after you choose <strong>Install and Restart</strong>.</p>
       <div class="panel">
         <h3>From a terminal</h3>
         <pre><code>dsh-update --check   # is a newer release available?

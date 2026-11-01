@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DeepSeek Harness Linux 桌面版 — AppImage、deb、rpm、arm64</title>
+<meta name="description" content="DeepSeek Harness 的社区 Linux 桌面构建：官方 Electron 应用，提供 AppImage、deb、rpm 和 tar.gz，带校验和、自动更新和一条命令安装。">
+<meta property="og:title" content="DeepSeek Harness Linux 桌面版">
+<meta property="og:description" content="官方 DeepSeek Harness 桌面应用的 AppImage、deb、rpm 和 tar.gz 构建，支持自动更新和一条命令安装。">
+<meta property="og:type" content="website">
+<link rel="alternate" hreflang="en" href="https://butterpurse-dot.github.io/deepseek-harness-linux/">
+<link rel="alternate" hreflang="zh-CN" href="https://butterpurse-dot.github.io/deepseek-harness-linux/index.zh.html">
+<meta property="og:image" content="https://butterpurse-dot.github.io/deepseek-harness-linux/assets/social-preview.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="640">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="DeepSeek Harness Linux 桌面版">
+<meta name="twitter:description" content="官方 DeepSeek Harness 桌面应用的 AppImage、deb、rpm 和 tar.gz 构建。">
+<meta name="twitter:image" content="https://butterpurse-dot.github.io/deepseek-harness-linux/assets/social-preview.png">
+<style>
+  :root {
+    --bg: #f5fbff;
+    --surface: #ffffff;
+    --ink: #0d1b2a;
+    --muted: #52677a;
+    --line: #d8e8f3;
+    --blue: #1b6fd6;
+    --blue-soft: #e7f3ff;
+    --code-bg: #0c1a2b;
+    --code-ink: #d7ecff;
+    --radius: 18px;
+    --shadow: 0 18px 50px rgba(20, 80, 140, .10);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #07121d;
+      --surface: #0d1d2c;
+      --ink: #e8f4ff;
+      --muted: #9db4c8;
+      --line: #1d3448;
+      --blue: #6fb4ff;
+      --blue-soft: #10283d;
+      --code-bg: #030a12;
+      --code-ink: #cfe9ff;
+      --shadow: 0 18px 50px rgba(0, 0, 0, .35);
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+  }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { width: min(1080px, calc(100% - 40px)); margin: 0 auto; }
+  header {
+    position: sticky; top: 0; z-index: 10;
+    backdrop-filter: blur(14px);
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    border-bottom: 1px solid var(--line);
+  }
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 20px; padding: 14px 0;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 750; letter-spacing: -.01em; color: var(--ink); }
+  .brand img { width: 30px; height: 30px; border-radius: 8px; }
+  .navlinks { display: flex; gap: 18px; font-size: 14px; }
+  .navlinks a { color: var(--muted); font-weight: 600; }
+  .navlinks a:hover { color: var(--blue); text-decoration: none; }
+  .hero { padding: 54px 0 26px; text-align: center; }
+  .hero h1 {
+    font-size: clamp(34px, 6vw, 62px);
+    line-height: 1.03;
+    letter-spacing: -.045em;
+    margin: 0 auto 18px;
+    max-width: 880px;
+  }
+  .hero p.lead {
+    font-size: clamp(17px, 2.3vw, 21px);
+    color: var(--muted);
+    max-width: 720px;
+    margin: 0 auto 28px;
+  }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-bottom: 26px; }
+  .button {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 20px; border-radius: 999px; font-weight: 700; font-size: 15px;
+    background: var(--blue); color: #fff; border: 1px solid transparent;
+  }
+  .button:hover { text-decoration: none; filter: brightness(1.06); }
+  .button.secondary { background: var(--surface); color: var(--ink); border-color: var(--line); }
+  .button.secondary:hover { border-color: var(--blue); }
+  .install {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--code-bg); color: var(--code-ink);
+    border-radius: 14px; padding: 14px 16px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 13.5px; text-align: left;
+    max-width: 900px; margin: 0 auto 10px;
+    overflow-x: auto;
+  }
+  .install code { white-space: pre-wrap; overflow-wrap: anywhere; flex: 1; }
+  .copy {
+    flex: none; border: 1px solid #2c4a66; background: #12263a; color: #cfe9ff;
+    border-radius: 9px; padding: 7px 11px; font: inherit; cursor: pointer;
+  }
+  .copy:hover { background: #18334c; }
+  .hint { color: var(--muted); font-size: 13px; margin: 0 0 26px; }
+  .banner {
+    width: 100%; display: block; border-radius: var(--radius);
+    border: 1px solid var(--line); box-shadow: var(--shadow);
+  }
+  .shot {
+    width: 100%; display: block; margin: 30px auto 0;
+    border-radius: var(--radius); border: 1px solid var(--line); box-shadow: var(--shadow);
+  }
+  section { padding: 54px 0; }
+  section h2 { font-size: clamp(24px, 3.5vw, 34px); letter-spacing: -.03em; margin: 0 0 10px; }
+  section p.sub { color: var(--muted); margin: 0 0 26px; max-width: 720px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 20px; box-shadow: 0 6px 24px rgba(20, 80, 140, .04);
+  }
+  .card h3 { margin: 0 0 6px; font-size: 17px; letter-spacing: -.01em; }
+  .card p { margin: 0; color: var(--muted); font-size: 14.5px; }
+  .tag {
+    display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--blue); background: var(--blue-soft);
+    border-radius: 999px; padding: 3px 9px; margin-bottom: 10px;
+  }
+  .panel {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 24px; box-shadow: var(--shadow);
+  }
+  .panel + .panel { margin-top: 16px; }
+  .panel h3 { margin: 0 0 8px; font-size: 18px; }
+  .panel p { margin: 0 0 12px; color: var(--muted); }
+  pre {
+    margin: 0; padding: 14px 16px; border-radius: 12px; overflow-x: auto;
+    background: var(--code-bg); color: var(--code-ink);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px;
+  }
+  .note {
+    border-left: 3px solid var(--blue); padding: 2px 0 2px 16px;
+    color: var(--muted); margin: 18px 0 0;
+  }
+  footer { border-top: 1px solid var(--line); padding: 30px 0 46px; color: var(--muted); font-size: 14px; }
+  footer .row { display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; }
+  footer a { color: var(--muted); font-weight: 600; }
+  footer a:hover { color: var(--blue); }
+  @media (max-width: 640px) {
+    .navlinks { display: none; }
+    .install { font-size: 12px; }
+    .hero { padding-top: 38px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <nav>
+      <a class="brand" href="#top"><img src="assets/dolphin-banner.png" alt=""> DeepSeek Harness · Linux</a>
+      <div class="navlinks">
+        <a href="#install">安装</a>
+        <a href="#features">特性</a>
+        <a href="#updates">更新</a>
+        <a href="https://github.com/butterpurse-dot/deepseek-harness-linux">GitHub</a>
+        <a href="index.html">English</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap">
+    <div class="hero">
+      <h1>DeepSeek Harness，<br>为 Linux 打包。</h1>
+      <p class="lead">官方 Electron 桌面应用，内置 Node、pnpm 和 Python 运行时——提供 AppImage、<code>.deb</code>、<code>.rpm</code> 和 <code>.tar.gz</code>。自动更新、校验和验证、一条命令安装。</p>
+      <div class="actions">
+        <a class="button" href="https://github.com/butterpurse-dot/deepseek-harness-linux/releases/latest">下载</a>
+        <a class="button secondary" href="https://github.com/butterpurse-dot/deepseek-harness-linux">查看源码</a>
+      </div>
+      <div class="install">
+        <code id="install-command">curl -fsSL https://github.com/butterpurse-dot/deepseek-harness-linux/releases/latest/download/install-linux.sh | bash</code>
+        <button class="copy" type="button" data-copy="#install-command">复制</button>
+      </div>
+      <p class="hint">安装到 <code>~/.local</code>。支持 x64 和 arm64。社区构建，非 DeepSeek 官方项目。</p>
+      <img class="banner" src="assets/dolphin-banner.gif" alt="一只衔着沙滩球的蓝色海豚">
+      <img class="shot" src="assets/app-screenshot.png" alt="DeepSeek Harness 桌面端在 Linux 上运行">
+    </div>
+  </div>
+
+  <section id="features">
+    <div class="wrap">
+      <h2>你将获得</h2>
+      <p class="sub">真正的桌面应用，不是浏览器套壳。所有运行时都随包提供，无需管理系统 Node。</p>
+      <div class="grid">
+        <div class="card"><span class="tag">官方应用</span><h3>同一个 Electron 应用</h3><p>上游 <code>apps/desktop</code> 构建，保留 agent、插件、工作区和 <code>dsh://</code> 协议。</p></div>
+        <div class="card"><span class="tag">格式</span><h3>AppImage、deb、rpm、tar.gz</h3><p>可选单文件 AppImage、Debian 或 Fedora 原生包，或便携 tarball。支持 x64 和 arm64。</p></div>
+        <div class="card"><span class="tag">更新</span><h3>x64 和 arm64 自动更新</h3><p>AppImage 会检查 GitHub Releases 并原地更新。<code>dsh-update</code> 在终端提供同样的流程。</p></div>
+        <div class="card"><span class="tag">可信</span><h3>每次都校验</h3><p>每个 release 都发布 <code>SHA256SUMS.txt</code>。安装器会在安装前验证下载。</p></div>
+        <div class="card"><span class="tag">及时</span><h3>跟随上游</h3><p>每小时运行的工作流会把 Linux 改动 rebase 到新的上游发布上，测试并发布。</p></div>
+        <div class="card"><span class="tag">便携</span><h3>内置运行时</h3><p>Node、pnpm 和 Python 随应用提供。AppImage 除 FUSE 外无需系统包。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="install">
+    <div class="wrap">
+      <h2>安装</h2>
+      <p class="sub">一条命令会自动选择架构、校验校验和，并添加桌面入口。</p>
+      <div class="panel">
+        <h3>一条命令</h3>
+        <pre><code>curl -fsSL https://github.com/butterpurse-dot/deepseek-harness-linux/releases/latest/download/install-linux.sh | bash</code></pre>
+        <p class="note">需要 curl 和 python3。安装到 <code>~/.local</code>；可传 <code>--prefix /usr/local</code> 更改位置。</p>
+      </div>
+      <div class="panel">
+        <h3>手动安装</h3>
+        <pre><code># AppImage
+chmod +x deepseek-harness-*.AppImage
+./deepseek-harness-*.AppImage
+
+# Debian / Ubuntu
+sudo apt install ./deepseek-harness-*.deb
+
+# Fedora / RHEL
+sudo dnf install ./deepseek-harness-*.rpm
+
+# Portable
+tar -xzf deepseek-harness-*.tar.gz
+./deepseek-harness-*/deepseek-harness</code></pre>
+        <p class="note">部分发行版运行 AppImage 需要 FUSE 2：<code>sudo apt install libfuse2</code> 或 <code>sudo dnf install fuse2</code>。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="updates">
+    <div class="wrap">
+      <h2>更新</h2>
+      <p class="sub">x64 和 arm64 AppImage 会在启动时及每六小时检查 GitHub Releases。应用会先询问是否下载，选择 <strong>Install and Restart</strong> 后安装。</p>
+      <div class="panel">
+        <h3>从终端更新</h3>
+        <pre><code>dsh-update --check   # is a newer release available?
+dsh-update           # download, verify and install it
+dsh-update --force   # reinstall the current release</code></pre>
+        <p class="note">arm64 AppImage 通过 arm64 feed 自动更新。同时也会发布单独的 <code>v&lt;version&gt;-arm64</code> release 供手动下载。</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>社区构建</h2>
+      <p class="sub">这是一个下游打包项目，不是 DeepSeek 官方产品。上游桌面端面向 macOS 和 Windows；本仓库补充 Linux 打包、CI 和安装器。</p>
+      <div class="panel">
+        <h3>维护</h3>
+        <p>尽力而为，没有 SLA，也没有常驻维护者。上游发布由自动化同步；Issue 和 Pull Request 由社区在有时间时处理。如果同步工作流被阻塞，会打开 <code>upstream-sync</code> issue，任何人都可以修复。</p>
+        <p><a href="https://github.com/butterpurse-dot/deepseek-harness-linux/blob/master/CONTRIBUTING.zh.md">参与贡献</a> · <a href="https://github.com/butterpurse-dot/deepseek-harness-linux/discussions">讨论区</a> · <a href="https://github.com/butterpurse-dot/deepseek-harness-linux/blob/master/LICENSE">MIT 许可证</a></p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap row">
+    <span>DeepSeek Harness Linux 桌面版 · MIT</span>
+    <span><a href="https://github.com/butterpurse-dot/deepseek-harness-linux">GitHub</a> · <a href="https://github.com/butterpurse-dot/deepseek-harness-linux/releases">Releases</a> · <a href="https://github.com/deepseek-ai/deepseek-harness">Upstream</a></span>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.copy').forEach(button => {
+    button.addEventListener('click', async () => {
+      const target = document.querySelector(button.dataset.copy)
+      if (!target) return
+      try {
+        await navigator.clipboard.writeText(target.textContent.trim())
+        const previous = button.textContent
+        button.textContent = 'Copied'
+        setTimeout(() => { button.textContent = previous }, 1600)
+      } catch {}
+    })
+  })
+</script>
+</body>
+</html>
