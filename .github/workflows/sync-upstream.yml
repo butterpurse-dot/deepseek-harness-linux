@@ -58,17 +58,36 @@ jobs:
             echo "up to date: $current (newest upstream release: $target)"
           fi
 
-      - name: Recover a missing release for the current version
+      - name: Release the current version
         if: steps.compare.outputs.needed != 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           current="${{ steps.compare.outputs.current }}"
-          if ! gh release view "v$current" --repo "$GH_REPO" >/dev/null 2>&1; then
-            git tag -f "v$current" HEAD
-            git push -f origin "v$current"
-            gh workflow run linux-desktop.yml --repo "$GH_REPO" --ref "v$current"
+          tag="v$current"
+          tag_commit="$(git rev-parse -q --verify "$tag^{commit}" || true)"
+          if [ -n "$tag_commit" ] && [ "$tag_commit" = "$(git rev-parse HEAD)" ]; then
+            if gh release view "$tag" --repo "$GH_REPO" >/dev/null 2>&1; then
+              echo "release $tag is current"
+              exit 0
+            fi
+            echo "release $tag is missing; dispatching x64 and arm64"
+            gh workflow run linux-desktop.yml --repo "$GH_REPO" --ref "$tag"
+            gh workflow run linux-desktop-arm64.yml --repo "$GH_REPO" --ref master
+            exit 0
           fi
+          if [ -n "$tag_commit" ] && git diff --quiet "$tag_commit..HEAD" -- \
+            apps/desktop scripts/install-linux.sh packaging \
+            .github/workflows/linux-desktop.yml .github/workflows/linux-desktop-arm64.yml \
+            package.json pnpm-lock.yaml; then
+            echo "no release-relevant changes since $tag"
+            exit 0
+          fi
+          echo "moving $tag to $(git rev-parse --short HEAD) and releasing"
+          git tag -f "$tag" HEAD
+          git push -f origin "$tag"
+          gh workflow run linux-desktop.yml --repo "$GH_REPO" --ref "$tag"
+          gh workflow run linux-desktop-arm64.yml --repo "$GH_REPO" --ref master
 
       - name: Rebase the Linux commits onto the new release
         if: steps.compare.outputs.needed == 'true'
@@ -103,6 +122,7 @@ jobs:
           git tag -f "v$version" HEAD
           git push -f origin "v$version"
           gh workflow run linux-desktop.yml --repo "$GH_REPO" --ref "v$version"
+          gh workflow run linux-desktop-arm64.yml --repo "$GH_REPO" --ref master
 
       - name: Keep scheduled workflows enabled
         if: steps.compare.outputs.needed != 'true'
