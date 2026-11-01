@@ -49,7 +49,7 @@
 
 ## 社交预览
 
-在仓库的 **Settings → Social preview** 中上传 `docs/assets/social-preview.png`（1280x640）。GitHub 没有该设置的 API，因此这是一次性手动步骤。落地页已经使用同一张图片作为 `og:image` 和 `twitter:image`。
+落地页使用 `docs/assets/social-preview.png`（1280x640）作为 `og:image` 和 `twitter:image`。GitHub 的仓库社交预览没有 API；该设置是可选的，不属于自动发布流程。
 
 ## 回滚
 
