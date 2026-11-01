@@ -6,7 +6,7 @@ It is a standalone repository, not a GitHub fork, so it can appear in search.
 
 ## Upstream sync
 
-`.github/workflows/sync-upstream.yml` runs daily at 06:00 UTC and can be started
+`.github/workflows/sync-upstream.yml` runs hourly at minute 7 and can be started
 manually. It:
 
 1. fetches the newest `dsh-v*` release tag from upstream,
@@ -15,7 +15,12 @@ manually. It:
    onto that tag,
 4. runs `pnpm run typecheck` and `pnpm run test:linux`,
 5. force-pushes `master`, moves `v<version>` to the new head, and dispatches
-   `linux-desktop.yml` with the tag as the ref.
+   `linux-desktop.yml` and `linux-desktop-arm64.yml`.
+
+When upstream has no newer release but `master` has release-relevant changes
+since the current tag, it moves the tag and dispatches both release workflows.
+Arch packaging changes are excluded so refreshing the `PKGBUILD` hashes after a
+release does not trigger another release.
 
 If the rebase or verification fails, the workflow opens or updates an
 `upstream-sync` issue and leaves the last release untouched. Fix the conflict
@@ -40,8 +45,9 @@ workflow is dispatched with a tag ref. It:
 - runs `pnpm run test:linux` and boots the built AppImage under Xvfb,
 - writes `SHA256SUMS.txt` and publishes the release.
 
-`linux-desktop-arm64.yml` is manual. It builds on an arm64 runner and creates a
-separate `v<version>-arm64` release. arm64 builds have no update feed, so users
+`linux-desktop-arm64.yml` is dispatched by the sync workflow and can also be run
+manually. It builds on an arm64 runner and creates a separate
+`v<version>-arm64` release. arm64 builds have no update feed, so users
 update by downloading the next arm64 release.
 
 ## External pull requests

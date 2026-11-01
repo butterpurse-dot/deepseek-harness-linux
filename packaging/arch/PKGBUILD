@@ -19,8 +19,8 @@ source=("deepseek-harness.png::https://raw.githubusercontent.com/butterpurse-dot
 source_x86_64=("deepseek-harness-${_version}-linux-x86_64-unsigned.AppImage::https://github.com/butterpurse-dot/deepseek-harness-linux/releases/download/${_tag}/deepseek-harness-${_version}-linux-x86_64-unsigned.AppImage")
 source_aarch64=("deepseek-harness-${_version}-linux-arm64-unsigned.AppImage::https://github.com/butterpurse-dot/deepseek-harness-linux/releases/download/${_tag}/deepseek-harness-${_version}-linux-arm64-unsigned.AppImage")
 sha256sums=('982c2859568d83d2576110a527c545f04641f4008bdb2cfeb6758f333c0fb07a')
-sha256sums_x86_64=('fbaf38403d6a74ffdce580815d482dc89f5768b3263370d12030904581207af3')
-sha256sums_aarch64=('7170956a6b53522e38e0a82d5203d8921c4d29e49914c32b927a708d932cffa9')
+sha256sums_x86_64=('470bbfbbc247c36b8d64a6bef5360e636c05dad074567aeb3560f6e1c58a7292')
+sha256sums_aarch64=('99214b9a6b2ecbfc72c79348421aa683de8a452a6987e02a021ea50a26b511f5')
 
 package() {
   local appimage
