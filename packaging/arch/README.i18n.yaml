@@ -3,5 +3,5 @@
 # After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packaging/arch/README.md
 /arch-linux-package:
-  en: 6c8c507abbd279aa
-  zh: bd0b2cfe4511a316
+  en: 6442606961042439
+  zh: 0d7e5b91c704b4bf
