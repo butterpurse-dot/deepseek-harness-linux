@@ -1,31 +1,32 @@
 # Maintainer: Infinite Foundation <butterpurse@gmail.com>
 # Build with: makepkg -si
-# Update: bump pkgver/_tag, run `updpkgsums`, then `makepkg -si`.
+# Update: bump pkgver/_version, run `updpkgsums`, then `makepkg -si`.
 pkgname=deepseek-harness-bin
 pkgver=0.2.2alpha2
 pkgrel=1
-_tag=v0.2.2-alpha.2
+_version=0.2.2-alpha.2
+_tag=v${_version}
 pkgdesc="DeepSeek Harness desktop app packaged as an AppImage"
 arch=('x86_64' 'aarch64')
 url="https://github.com/butterpurse-dot/deepseek-harness-linux"
 license=('MIT')
-depends=('fuse2')
+depends=('fuse2' 'alsa-lib' 'gtk3' 'libnotify' 'nss' 'libxss' 'libxtst' 'xdg-utils' 'at-spi2-core' 'util-linux' 'libsecret' 'mesa' 'libappindicator')
 provides=('deepseek-harness')
 conflicts=('deepseek-harness')
 options=(!strip)
 
 source=("deepseek-harness.png::https://raw.githubusercontent.com/butterpurse-dot/deepseek-harness-linux/master/apps/desktop/resources/icon.png")
-source_x86_64=("deepseek-harness-${_tag}-linux-x86_64-unsigned.AppImage::https://github.com/butterpurse-dot/deepseek-harness-linux/releases/download/${_tag}/deepseek-harness-${_tag}-linux-x86_64-unsigned.AppImage")
-source_aarch64=("deepseek-harness-${_tag}-linux-arm64-unsigned.AppImage::https://github.com/butterpurse-dot/deepseek-harness-linux/releases/download/${_tag}/deepseek-harness-${_tag}-linux-arm64-unsigned.AppImage")
-sha256sums=('SKIP')
-sha256sums_x86_64=('SKIP')
-sha256sums_aarch64=('SKIP')
+source_x86_64=("deepseek-harness-${_version}-linux-x86_64-unsigned.AppImage::https://github.com/butterpurse-dot/deepseek-harness-linux/releases/download/${_tag}/deepseek-harness-${_version}-linux-x86_64-unsigned.AppImage")
+source_aarch64=("deepseek-harness-${_version}-linux-arm64-unsigned.AppImage::https://github.com/butterpurse-dot/deepseek-harness-linux/releases/download/${_tag}/deepseek-harness-${_version}-linux-arm64-unsigned.AppImage")
+sha256sums=('982c2859568d83d2576110a527c545f04641f4008bdb2cfeb6758f333c0fb07a')
+sha256sums_x86_64=('fbaf38403d6a74ffdce580815d482dc89f5768b3263370d12030904581207af3')
+sha256sums_aarch64=('7170956a6b53522e38e0a82d5203d8921c4d29e49914c32b927a708d932cffa9')
 
 package() {
   local appimage
   case "$CARCH" in
-    x86_64) appimage="deepseek-harness-${_tag}-linux-x86_64-unsigned.AppImage" ;;
-    aarch64) appimage="deepseek-harness-${_tag}-linux-arm64-unsigned.AppImage" ;;
+    x86_64) appimage="deepseek-harness-${_version}-linux-x86_64-unsigned.AppImage" ;;
+    aarch64) appimage="deepseek-harness-${_version}-linux-arm64-unsigned.AppImage" ;;
     *) error "unsupported architecture: $CARCH" ;;
   esac
 
