@@ -49,8 +49,9 @@ workflow is dispatched with a tag ref. It:
 
 `linux-desktop-arm64.yml` is dispatched by the sync workflow and can also be run
 manually. It builds on an arm64 runner and creates a separate
-`v<version>-arm64` release. arm64 builds have no update feed, so users
-update by downloading the next arm64 release.
+`v<version>-arm64` release. Its AppImage updates through
+`latest-linux-arm64.yml`, which the metadata refresh workflow copies into the
+x64 release; the arm64 release remains for manual downloads.
 
 `refresh-arch-hashes.yml` runs after a successful x64 or arm64 release and
 updates `_version`, `pkgver`, and both AppImage hashes in
@@ -109,7 +110,6 @@ install even though desktop systems already provide them.
 ## Known limitations
 
 - Builds are unsigned. Every release publishes checksums.
-- arm64 has no auto-update feed.
 - The in-app download/install path was exercised locally against a generic feed
   with a stub AppImage: the app checked the feed, downloaded the file, verified
   its SHA-512, replaced the `APPIMAGE` target, and spawned it. CI still does not

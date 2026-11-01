@@ -78,6 +78,18 @@ jobs:
         working-directory: apps/desktop/.desktop-build/targets/linux-arm64/unsigned-artifacts
         run: sha256sum *.AppImage *.deb *.tar.gz *.rpm > SHA256SUMS.txt
 
+      - name: Build arm64 update feed
+        working-directory: apps/desktop
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          artifacts=".desktop-build/targets/linux-arm64/unsigned-artifacts"
+          appimage="$(basename "$(ls "$artifacts"/*.AppImage | head -1)")"
+          sha512="$(openssl dgst -sha512 -binary "$artifacts/$appimage" | base64 -w0)"
+          size="$(stat -c %s "$artifacts/$appimage")"
+          printf 'version: %s\nfiles:\n  - url: https://github.com/%s/releases/download/v%s-arm64/%s\n    sha512: %s\n    size: %s\npath: %s\nsha512: %s\nreleaseDate: %s\n' \
+            "$version" "$GITHUB_REPOSITORY" "$version" "$appimage" "$sha512" "$size" "$appimage" "$sha512" \
+            "$(date -u +%Y-%m-%dT%H:%M:%S.000Z)" > "$artifacts/latest-linux-arm64.yml"
+
       - name: Publish arm64 release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -89,8 +101,8 @@ jobs:
             gh release delete "$tag" --repo "$GH_REPO" --yes --cleanup-tag
           fi
           gh release create "$tag" \
-            "$artifacts"/*.AppImage "$artifacts"/*.deb "$artifacts"/*.tar.gz "$artifacts"/*.rpm "$artifacts/SHA256SUMS.txt" \
+            "$artifacts"/*.AppImage "$artifacts"/*.deb "$artifacts"/*.tar.gz "$artifacts"/*.rpm "$artifacts/SHA256SUMS.txt" "$artifacts/latest-linux-arm64.yml" \
             scripts/install-linux.sh \
             --repo "$GH_REPO" --target "$GITHUB_SHA" --latest=false \
             --title "DeepSeek Harness $version (arm64)" \
-            --notes "Linux arm64 build of DeepSeek Harness $version. Manual updates only: download the newer arm64 release. The x64 release has AppImage auto-update."
+            --notes "Linux arm64 build of DeepSeek Harness $version. The arm64 AppImage auto-updates via the arm64 feed published with the x64 release; manual downloads remain available."

@@ -42,6 +42,15 @@ jobs:
             exit 0
           fi
           python3 scripts/refresh-arch-hashes.py "$version" "$x64" "$arm64"
+
+          arm64_feed=/tmp/latest-linux-arm64.yml
+          rm -f "$arm64_feed"
+          gh release download "v$version-arm64" --repo "$GITHUB_REPOSITORY" \
+            --pattern latest-linux-arm64.yml --output "$arm64_feed" --clobber 2>/dev/null || true
+          if [ -f "$arm64_feed" ] && gh release view "v$version" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "v$version" "$arm64_feed" --repo "$GITHUB_REPOSITORY" --clobber
+          fi
+
           if git diff --quiet -- packaging/arch/PKGBUILD; then
             echo "PKGBUILD is already current"
             exit 0
