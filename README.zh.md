@@ -72,7 +72,7 @@ dsh-update --force   # reinstall the current release
 
 `dsh-update` 会把已安装的 AppImage 与发布页的校验和比较，因此损坏或被手动修改的副本会被重新安装。`.deb` 和 `.tar.gz` 用户需要下载并安装新版本。
 
-arm64 版本单独发布为 `v<version>-arm64`，需要手动更新，不提供更新 feed。
+arm64 版本单独发布为 `v<version>-arm64`，并使用复制到 x64 release 的 `latest-linux-arm64.yml` feed，因此 arm64 AppImage 也会自动更新。单独的 arm64 release 仍可用于手动下载。
 
 ## 包含内容
 
@@ -85,7 +85,7 @@ arm64 版本单独发布为 `v<version>-arm64`，需要手动更新，不提供�
 | 平台 | 产物 | 自动更新 |
 |---|---|---|
 | Linux x64 | AppImage、`.deb`、`.rpm`、`.tar.gz` | 仅 AppImage |
-| Linux arm64 | AppImage、`.deb`、`.rpm`、`.tar.gz`（单独发布） | 手动 |
+| Linux arm64 | AppImage、`.deb`、`.rpm`、`.tar.gz`（单独发布） | 仅 AppImage |
 
 **系统要求：** x64 或 arm64 Linux，glibc 2.28+，约 450 MB 磁盘空间。AppImage 需要 FUSE 2（Debian/Ubuntu 为 `libfuse2`，Fedora 为 `fuse2`）；没有 FUSE 时可用 `--appimage-extract-and-run` 运行。
 
