@@ -1,5 +1,7 @@
 # Contributing
 
+English | [中文](CONTRIBUTING.zh.md)
+
 This repository packages the official [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) desktop app for Linux. Contributions to the packaging, installer, CI, and documentation are welcome.
 
 The upstream project does not accept external pull requests. Agent, runtime, plugin, and web UI issues belong in the [upstream discussions](https://github.com/deepseek-ai/deepseek-harness/discussions); this repository only owns the Linux packaging layer.
@@ -11,8 +13,8 @@ This is a best-effort community build with no SLA and no active maintainer. Upst
 ## Ways to help
 
 - Test on your distribution and report what works or breaks.
-- Add packaging formats: RPM, Arch PKGBUILD, Nix, or another installer.
-- Improve the installer, updater, or checksum verification.
+- Improve the existing RPM, Arch PKGBUILD, installer, updater, or checksum verification.
+- Add packaging formats: Nix, Flatpak, or another installer.
 - Translate the docs or the landing page.
 - Share the project where Linux and DeepSeek users gather.
 - If you want to take over maintenance, open a discussion. The MIT license lets anyone fork and continue.

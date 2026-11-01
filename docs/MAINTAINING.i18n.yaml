@@ -1,0 +1,31 @@
+# Bilingual-pair consistency record for MAINTAINING.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write docs/MAINTAINING.md
+/maintaining-this-fork:
+  en: fb00085ca9742784
+  zh: 3a264bd3ef1879d3
+/maintaining-this-fork/upstream-sync:
+  en: e2bb5770c32c6034
+  zh: d57e4518769a764e
+/maintaining-this-fork/release:
+  en: e87a346672957350
+  zh: d1ba634f4400f6d1
+/maintaining-this-fork/external-pull-requests:
+  en: 534b056d13ece1d5
+  zh: 348c09f42143e1b4
+/maintaining-this-fork/installer:
+  en: eac06e4f29b79583
+  zh: c4474b314121289c
+/maintaining-this-fork/social-preview:
+  en: 20a2c9d87879c542
+  zh: 5f3dfe512c523d6a
+/maintaining-this-fork/rollback:
+  en: 6dd3687b5c17340f
+  zh: 088c82a11cdf26b3
+/maintaining-this-fork/linux-package-checks:
+  en: 16c06da6634f5dca
+  zh: 9244b0982c729f76
+/maintaining-this-fork/known-limitations:
+  en: cd5379707d26bce9
+  zh: acf81f432194f002

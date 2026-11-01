@@ -2,33 +2,39 @@
 # section, a hash of its English and Chinese blocks outside code blocks and generated regions.
 # After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write README.md
-/deepseek-harness:
-  en: f68c4f080ce55ff2
-  zh: 88a76d7f7f0b260e
-/deepseek-harness/developer-preview:
-  en: 4ef4d8a71ac143f0
-  zh: 1bfc3149ba8e5543
-/deepseek-harness/run:
-  en: 4e0248e4c6474fc6
-  zh: eb2fb8d78c7d6bc0
-/deepseek-harness/run/run-from-npm:
-  en: e22005cd42e6cbad
-  zh: 0f536f4208df1d60
-/deepseek-harness/run/run-from-source:
-  en: 819e3f7c144d0d64
-  zh: de815f040975dba7
-/deepseek-harness/community-and-support:
-  en: 20acf6451fdc869b
-  zh: d06246dd019ecef7
-/deepseek-harness/contributing:
-  en: cabc2d3e9f8898bd
-  zh: 83b6d238bae29ce3
-/deepseek-harness/development:
-  en: 803ca2b11b497bed
-  zh: 8b4071eb0e7783ef
-/deepseek-harness/citation:
-  en: 6704e9e5a8d49a91
-  zh: 85c9cdd8d56f8e9d
-/deepseek-harness/license:
-  en: 926995344fc1c72b
-  zh: c92fab5abf85932f
+/:
+  en: 1f66ae893511e6f6
+  zh: d5cf61836abec9c0
+/deepseek-harness-for-linux:
+  en: f8758c679fd33d4e
+  zh: a8b6134c480a4de8
+/deepseek-harness-for-linux/why-this-repo:
+  en: 93968ee2ef122cc2
+  zh: 4707a66fd5d1f82f
+/deepseek-harness-for-linux/install:
+  en: 27200ed0b1251b2e
+  zh: e899d1989b7edd58
+/deepseek-harness-for-linux/updates:
+  en: 5f3a3a369bb14e95
+  zh: e73c4475df0e5e41
+/deepseek-harness-for-linux/what-is-included:
+  en: 5b9be9844acacddc
+  zh: 0029bab30f4f527b
+/deepseek-harness-for-linux/platform-support:
+  en: 777f19bfdffce755
+  zh: 3a979aa9510c870f
+/deepseek-harness-for-linux/build-from-source:
+  en: 0ec52ec77be1c406
+  zh: 1345be177ddca0ea
+/deepseek-harness-for-linux/syncing-with-upstream:
+  en: d3a9c4504bcb57fd
+  zh: d59353adef5ec676
+/deepseek-harness-for-linux/maintenance:
+  en: 70cf43b64c24ddea
+  zh: 82f38a2e56f89779
+/deepseek-harness-for-linux/contributing:
+  en: 02f7e6971a36e0dc
+  zh: d7de48b95b90a4a0
+/deepseek-harness-for-linux/license:
+  en: c2cf68f2a01763b8
+  zh: 47283cf2e0b3b987

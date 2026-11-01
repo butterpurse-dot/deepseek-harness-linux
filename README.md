@@ -6,7 +6,7 @@
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
   <a href="https://github.com/butterpurse-dot/deepseek-harness-linux/releases"><img alt="Latest release" src="https://img.shields.io/github/v/release/butterpurse-dot/deepseek-harness-linux?include_prereleases&label=release"></a>
   <a href="https://github.com/butterpurse-dot/deepseek-harness-linux/actions/workflows/sync-upstream.yml"><img alt="Upstream sync" src="https://github.com/butterpurse-dot/deepseek-harness-linux/actions/workflows/sync-upstream.yml/badge.svg"></a>
-  <a href="#platform-support"><img alt="Platform: Linux x64" src="https://img.shields.io/badge/platform-linux%20x64-lightgrey.svg"></a>
+  <a href="#platform-support"><img alt="Platform: Linux x64 + arm64" src="https://img.shields.io/badge/platform-linux%20x64%20%2B%20arm64-lightgrey.svg"></a>
   <a href="https://butterpurse-dot.github.io/deepseek-harness-linux/"><img alt="Website" src="https://img.shields.io/badge/website-live-1b6fd6.svg"></a>
 </p>
 
@@ -16,9 +16,19 @@
 
 # DeepSeek Harness for Linux
 
+English | [中文](README.zh.md)
+
 Community Linux packaging for the official [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) desktop app. This is a downstream fork, not an official DeepSeek project.
 
-The upstream desktop app is packaged for macOS and Windows only. This fork adds a Linux release target and publishes **AppImage**, **`.deb`**, and **`.tar.gz`** builds, with AppImage auto-update through `electron-updater` and GitHub Releases.
+The upstream desktop app is packaged for macOS and Windows only. This fork adds a Linux release target and publishes **AppImage**, **`.deb`**, **`.rpm`**, and **`.tar.gz`** builds for x64 and arm64, with AppImage auto-update through `electron-updater` and GitHub Releases.
+
+## Why this repo
+
+- **RPM as well as AppImage, deb, and tar.gz**, for Fedora/RHEL users.
+- **x64 and arm64** artifacts, with a separate arm64 release.
+- **AppImage auto-update** and a `dsh-update` terminal updater with checksum verification.
+- **One-command installer** and a published `SHA256SUMS.txt` for every release.
+- **Hourly upstream sync** that rebases, tests, and releases automatically.
 
 ## Install
 

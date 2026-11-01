@@ -1,5 +1,7 @@
 # Arch Linux package
 
+English | [中文](README.zh.md)
+
 `PKGBUILD` installs the release AppImage into `/opt/deepseek-harness` and adds a
 launcher, icon, and `.desktop` entry.
 
