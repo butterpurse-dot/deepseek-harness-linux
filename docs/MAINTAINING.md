@@ -85,10 +85,9 @@ cached raw branch.
 
 ## Social preview
 
-Upload `docs/assets/social-preview.png` (1280x640) in the repository's
-**Settings → Social preview**. GitHub has no API for this setting, so it stays a
-one-time manual step. The landing page already uses the same image for
-`og:image` and `twitter:image`.
+The landing page uses `docs/assets/social-preview.png` (1280x640) for
+`og:image` and `twitter:image`. GitHub's repository social preview has no API;
+setting it is optional and is not part of the automated release path.
 
 ## Rollback
 
