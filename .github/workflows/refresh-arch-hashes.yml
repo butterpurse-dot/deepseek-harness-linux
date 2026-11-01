@@ -1,0 +1,53 @@
+name: Refresh Arch hashes
+
+on:
+  workflow_run:
+    workflows: ['Linux desktop release', 'Linux desktop arm64']
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-arch-hashes
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+
+      - name: Update PKGBUILD version and hashes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          version="$(node -p "require('./apps/desktop/package.json').version")"
+          x64_file=/tmp/dsh-x64-sums.txt
+          arm64_file=/tmp/dsh-arm64-sums.txt
+          rm -f "$x64_file" "$arm64_file"
+          gh release download "v$version" --repo "$GITHUB_REPOSITORY" \
+            --pattern SHA256SUMS.txt --output "$x64_file" --clobber 2>/dev/null || true
+          gh release download "v$version-arm64" --repo "$GITHUB_REPOSITORY" \
+            --pattern SHA256SUMS.txt --output "$arm64_file" --clobber 2>/dev/null || true
+          x64="$(awk '/linux-x86_64-unsigned\.AppImage$/{print $1; exit}' "$x64_file" 2>/dev/null || true)"
+          arm64="$(awk '/linux-arm64-unsigned\.AppImage$/{print $1; exit}' "$arm64_file" 2>/dev/null || true)"
+          if [ -z "$x64" ] || [ -z "$arm64" ]; then
+            echo "release assets are not ready yet; the other release workflow will retry"
+            exit 0
+          fi
+          python3 scripts/refresh-arch-hashes.py "$version" "$x64" "$arm64"
+          if git diff --quiet -- packaging/arch/PKGBUILD; then
+            echo "PKGBUILD is already current"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add packaging/arch/PKGBUILD
+          git commit -m "chore: refresh Arch package version and hashes"
+          git push origin master

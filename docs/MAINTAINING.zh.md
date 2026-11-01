@@ -33,6 +33,8 @@
 
 `linux-desktop-arm64.yml` 由同步工作流派发，也可以手动运行。它在 arm64 runner 上构建，并创建单独的 `v<version>-arm64` release。arm64 构建没有更新 feed，用户需要下载下一个 arm64 release 来更新。
 
+`refresh-arch-hashes.yml` 会在 x64 或 arm64 发布成功后运行，更新 `packaging/arch/PKGBUILD` 中的 `_version`、`pkgver` 和两个 AppImage 的校验和。因此正常发布不需要手动运行 `updpkgsums`。
+
 ## 外部 Pull Request
 
 本地 `dsh-pr-agent` systemd timer 每两分钟运行一次。它仅在队列变化时更新 **External PR review queue** issue，然后对每条新的、非平凡的 reviewer 评论调用 `dsh --profile headless`。Agent 在临时 clone 中工作；wrapper 在推送到 PR fork 并发布回复之前运行 `git diff --check`，对于代码改动还会运行仓库测试脚本。平凡评论（LGTM、感谢、纯 emoji）会被跳过，每条评论最多尝试三次。可以让 agent 检查队列 issue 获取摘要；timer 无需邮件即可处理评论。队列会排除同一账号拥有的仓库。

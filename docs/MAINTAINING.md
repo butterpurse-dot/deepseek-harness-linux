@@ -52,6 +52,11 @@ manually. It builds on an arm64 runner and creates a separate
 `v<version>-arm64` release. arm64 builds have no update feed, so users
 update by downloading the next arm64 release.
 
+`refresh-arch-hashes.yml` runs after a successful x64 or arm64 release and
+updates `_version`, `pkgver`, and both AppImage hashes in
+`packaging/arch/PKGBUILD`. A normal release therefore needs no manual
+`updpkgsums` step.
+
 ## External pull requests
 
 The local `dsh-pr-agent` systemd timer runs every two minutes. It updates the
