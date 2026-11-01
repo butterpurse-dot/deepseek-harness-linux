@@ -31,7 +31,7 @@
 - 运行 `pnpm run test:linux`，并在 Xvfb 下启动构建出的 AppImage；
 - 写入 `SHA256SUMS.txt` 并发布 release。
 
-`linux-desktop-arm64.yml` 由同步工作流派发，也可以手动运行。它在 arm64 runner 上构建，并创建单独的 `v<version>-arm64` release。arm64 构建没有更新 feed，用户需要下载下一个 arm64 release 来更新。
+`linux-desktop-arm64.yml` 由同步工作流派发，也可以手动运行。它在 arm64 runner 上构建，并创建单独的 `v<version>-arm64` release。其 AppImage 通过 `latest-linux-arm64.yml` 更新；元数据刷新工作流会把该文件复制到 x64 release，arm64 release 仍可用于手动下载。
 
 `refresh-arch-hashes.yml` 会在 x64 或 arm64 发布成功后运行，更新 `packaging/arch/PKGBUILD` 中的 `_version`、`pkgver` 和两个 AppImage 的校验和。因此正常发布不需要手动运行 `updpkgsums`。
 
@@ -62,5 +62,4 @@ AppImage 是主要产物。`.deb` 会在 Ubuntu 24.04 容器中安装并启动�
 ## 已知限制
 
 - 构建未签名。每个 release 都会发布校验和。
-- arm64 没有自动更新 feed。
 - 应用内下载/安装路径已在本地使用通用 feed 和 stub AppImage 验证：应用检查 feed、下载文件、校验 SHA-512、替换 `APPIMAGE` 目标并启动它。CI 仍未发布更新的真实版本以测试完整的新版本启动。
