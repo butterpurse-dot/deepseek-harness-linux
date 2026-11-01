@@ -255,6 +255,12 @@ export function createElectronBuilderConfig(
     },
     rpm: {
       packageName: 'deepseek-harness',
+      depends: ['gtk3', 'libnotify', 'nss', 'libXScrnSaver', '(libXtst or libXtst6)', 'xdg-utils',
+        'at-spi2-core', '(libuuid or libuuid1)', 'alsa-lib'],
+    },
+    deb: {
+      depends: ['libgtk-3-0', 'libnotify4', 'libnss3', 'libxss1', 'libxtst6', 'xdg-utils',
+        'libatspi2.0-0', 'libuuid1', 'libsecret-1-0', 'libasound2t64 | libasound2'],
     },
     linux: {
       icon: fileURLToPath(new URL('../resources/icon.png', import.meta.url)),
