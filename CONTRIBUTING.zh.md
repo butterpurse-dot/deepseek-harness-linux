@@ -1,14 +1,20 @@
 # 贡献指南
 
+[English](CONTRIBUTING.md) | 中文
+
 本仓库为官方 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 桌面端提供 Linux 打包。欢迎提交打包、安装器、CI 和文档相关的改动。
 
 上游项目目前不接受外部 pull request。Agent、运行时、插件和 Web UI 的问题请前往[上游讨论区](https://github.com/deepseek-ai/deepseek-harness/discussions)；本仓库只负责 Linux 打包层。
 
+## 维护模式
+
+这是一个尽力而为的社区构建，没有 SLA，也没有常驻维护者。上游发布由自动化同步；Issue 和 Pull Request 由社区在有时间时处理。如果同步工作流被阻塞，会打开 `upstream-sync` issue，任何人都可以修复。
+
 ## 如何帮忙
 
 - 在你的发行版上测试并反馈结果。
-- 增加打包格式：RPM、Arch PKGBUILD、Nix 或其他安装方式。
-- 改进安装器、更新器或校验逻辑。
+- 改进现有的 RPM、Arch PKGBUILD、安装器、更新器或校验逻辑。
+- 增加打包格式：Nix、Flatpak 或其他安装方式。
 - 翻译文档或落地页。
 - 在 Linux 与 DeepSeek 社区分享这个项目。
 - 如果你想接手维护，请发起讨论。MIT 许可证允许任何人 fork 并继续。
