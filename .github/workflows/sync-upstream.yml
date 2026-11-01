@@ -77,9 +77,7 @@ jobs:
             exit 0
           fi
           if [ -n "$tag_commit" ] && git diff --quiet "$tag_commit..HEAD" -- \
-            apps/desktop scripts/install-linux.sh \
-            .github/workflows/linux-desktop.yml .github/workflows/linux-desktop-arm64.yml \
-            package.json pnpm-lock.yaml; then
+            apps/desktop scripts/install-linux.sh package.json pnpm-lock.yaml; then
             echo "no release-relevant changes since $tag"
             exit 0
           fi
