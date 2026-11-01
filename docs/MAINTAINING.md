@@ -76,6 +76,13 @@ installer in update mode. The script is published as a release asset; the
 installed updater fetches `releases/latest/download/install-linux.sh`, not a
 cached raw branch.
 
+## Social preview
+
+Upload `docs/assets/social-preview.png` (1280x640) in the repository's
+**Settings → Social preview**. GitHub has no API for this setting, so it stays a
+one-time manual step. The landing page already uses the same image for
+`og:image` and `twitter:image`.
+
 ## Rollback
 
 Re-publish an older tag by dispatching `linux-desktop.yml` with that tag. If the
