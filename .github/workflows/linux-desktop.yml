@@ -99,3 +99,20 @@ jobs:
           sed "s/__VERSION__/$version/g" docs/RELEASE_NOTES.md > /tmp/release-notes.md
           gh release upload "$tag" "$artifacts/SHA256SUMS.txt" scripts/install-linux.sh --clobber
           gh release edit "$tag" --draft=false --notes-file /tmp/release-notes.md
+
+      - name: Announce on X
+        continue-on-error: true
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+          X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
+        run: |
+          if [ -z "$X_BEARER_TOKEN" ] && [ -z "$X_API_KEY" ]; then
+            echo "X credentials are not configured; skipping announcement."
+            exit 0
+          fi
+          version="$(node -p "require('./apps/desktop/package.json').version")"
+          python3 scripts/post_to_x.py \
+            "DeepSeek Harness for Linux v$version is out: AppImage, deb, rpm, and tar.gz for x64/arm64, with checksums and AppImage auto-update. https://github.com/$GITHUB_REPOSITORY/releases/tag/v$version"
