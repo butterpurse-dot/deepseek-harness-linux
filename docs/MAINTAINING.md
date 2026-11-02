@@ -84,6 +84,14 @@ installer in update mode. The script is published as a release asset; the
 installed updater fetches `releases/latest/download/install-linux.sh`, not a
 cached raw branch.
 
+## X announcements
+
+The x64 release workflow posts a release announcement when `X_API_KEY`,
+`X_API_SECRET`, `X_ACCESS_TOKEN`, and `X_ACCESS_TOKEN_SECRET` (or
+`X_BEARER_TOKEN`) are configured as repository secrets. Without them it skips
+the step. The poster is `scripts/post_to_x.py`; use `--dry-run` to check the
+text and `--check` to verify the configured auth method.
+
 ## Social preview
 
 The landing page uses `docs/assets/social-preview.png` (1280x640) for
