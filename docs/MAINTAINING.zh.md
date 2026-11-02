@@ -47,6 +47,10 @@
 
 `dsh-update --check`、`dsh-update` 和 `dsh-update --force` 会以更新模式重新运行安装器。该脚本作为 release 资产发布；已安装的更新器会获取 `releases/latest/download/install-linux.sh`，而不是缓存的 raw 分支。
 
+## X 公告
+
+当仓库 secrets 中配置了 `X_API_KEY`、`X_API_SECRET`、`X_ACCESS_TOKEN` 和 `X_ACCESS_TOKEN_SECRET`（或 `X_BEARER_TOKEN`）时，x64 发布工作流会自动发布一条 release 公告。没有配置时会跳过该步骤。发布脚本是 `scripts/post_to_x.py`；可用 `--dry-run` 检查文本，用 `--check` 检查认证方式。
+
 ## 社交预览
 
 落地页使用 `docs/assets/social-preview.png`（1280x640）作为 `og:image` 和 `twitter:image`。GitHub 的仓库社交预览没有 API；该设置是可选的，不属于自动发布流程。
