@@ -10,7 +10,7 @@
 
 1. 获取上游最新的 `dsh-v*` 发布 tag；
 2. 与 `apps/desktop/package.json` 比较；
-3. 把首个 Linux 提交（`butterpurse@gmail.com`）之后的每个提交 rebase 到该 tag；
+3. 把首个 Linux 提交之后的每个提交 rebase 到该 tag，同时把旧作者地址 `butterpurse@gmail.com` 改写为账号的 noreply 地址 `248566377+butterpurse-dot@users.noreply.github.com`（查找时两者都接受）；
 4. 运行 `pnpm run typecheck` 和 `pnpm run test:linux`；
 5. 强制推送 `master`，把 `v<version>` 移动到新 HEAD，并派发 `linux-desktop.yml` 和 `linux-desktop-arm64.yml`。
 
@@ -21,6 +21,25 @@
 工作流还会大约每月写入 `.github/keepalive`。该提交可防止 GitHub 在仓库 60 天无活动后禁用定时工作流。
 
 除非 rebase 无法修复，否则不要手动把上游 `master` 合并到此分支；工作流假定 Linux 提交线性地叠加在上游发布 tag 之上。
+
+### 同步失败时
+
+先查看失败的步骤：`gh run view <id> --log-failed`。以下是目前遇到过的失败及修复方法，人和 AI agent 都会遇到。
+
+| 现象 | 原因 | 修复 |
+|---|---|---|
+| 运行以 `startup_failure` 结束且没有日志 | 仓库的 Actions 策略阻止了 `actions/checkout` 和 `actions/setup-node`（例如“仅本地 actions”或“要求 SHA 固定”） | 仓库所有者：Settings → Actions → General → 允许 GitHub 官方 actions，关闭 SHA 固定。或运行 `gh api -X PUT repos/<repo>/actions/permissions -F enabled=true -f allowed_actions=selected -F sha_pinning_required=false` 和 `gh api -X PUT repos/<repo>/actions/permissions/selected-actions -F github_owned_allowed=true -F verified_allowed=false`。用 `gh api repos/<repo>/actions/permissions` 检查；该设置曾被不明原因重置过一次 |
+| Rebase 步骤：`Committer identity unknown` | runner 没有 git 身份 | 已修复：该步骤把 `github-actions[bot]` 设为 committer |
+| Push 步骤：`refusing to allow a GitHub App to create or update workflow ... without workflows permission` | 上游修改了 `.github/workflows/*`，内置的 `GITHUB_TOKEN` 不能推送这些文件 | 添加仓库 secret `SYNC_TOKEN`：仅限本仓库的 fine-grained token，Contents 和 Workflows 读写权限。存在时 checkout 会使用它 |
+| Push 步骤：`GH007: Your push would publish a private email address` | 重放的提交使用了私有邮箱作为作者 | rebase 会把 `butterpurse@gmail.com` 改写为 noreply 地址。其他私有地址需要在 rebase 步骤中同样处理。本地提交也请使用 noreply 地址 |
+| x64 发布构建了两次 | 用 `SYNC_TOKEN` 推送会通过 tag 触发器启动 `linux-desktop.yml`；用 `GITHUB_TOKEN` 推送不会 | 已处理：设置了 `SYNC_TOKEN` 时，该步骤跳过显式的 x64 派发。arm64 总会被派发 |
+
+修复者须知：
+
+- 仓库设置和 secret 归所有者管理。Agent 应把确切命令交给所有者执行，而不是自己修改，也绝不要粘贴或打印 token。要在不显示的情况下保存 `gh` 已在使用的 token：`gh auth token | gh secret set SYNC_TOKEN -R <repo>`。
+- 同步运行期间不要推送 `master`，否则它的 `--force-with-lease` 推送会失败。
+- 推送修改后的 rebase 步骤前先在本地测试：在临时分支上运行该步骤的脚本，并检查 `git log --format=%ae <tag>..<branch>`。请使用单独的 clone：该步骤的 `git config` 会为整个 clone（包括 worktree）设置 bot 身份。
+- 运行成功后，关闭打开的 `upstream-sync` issue。
 
 ## 发布
 

@@ -13,8 +13,10 @@ manually. It:
 
 1. fetches the newest `dsh-v*` release tag from upstream,
 2. compares it with `apps/desktop/package.json`,
-3. rebases every commit after the first Linux commit (`butterpurse@gmail.com`)
-   onto that tag,
+3. rebases every commit after the first Linux commit onto that tag, rewriting
+   the old author address `butterpurse@gmail.com` to the account's noreply
+   address `248566377+butterpurse-dot@users.noreply.github.com` (the lookup
+   accepts either),
 4. runs `pnpm run typecheck` and `pnpm run test:linux`,
 5. force-pushes `master`, moves `v<version>` to the new head, and dispatches
    `linux-desktop.yml` and `linux-desktop-arm64.yml`.
@@ -36,6 +38,33 @@ repository activity.
 Do not merge upstream `master` into this branch by hand unless the rebase cannot
 be repaired; the workflow assumes a linear series of Linux commits on top of an
 upstream release tag.
+
+### When the sync fails
+
+Read the failed step first: `gh run view <id> --log-failed`. These are the
+failures seen so far, and their fixes. People and AI agents both hit them.
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| Run ends in `startup_failure` with no logs | The repository's Actions policy blocks `actions/checkout` and `actions/setup-node` (for example "local actions only" or "require SHA pinning") | Repository owner: Settings → Actions → General → allow GitHub-owned actions, SHA pinning off. Or `gh api -X PUT repos/<repo>/actions/permissions -F enabled=true -f allowed_actions=selected -F sha_pinning_required=false` and `gh api -X PUT repos/<repo>/actions/permissions/selected-actions -F github_owned_allowed=true -F verified_allowed=false`. Check it with `gh api repos/<repo>/actions/permissions`; it has been reset once without explanation |
+| Rebase step: `Committer identity unknown` | The runner has no git identity | Already fixed: the step sets `github-actions[bot]` as committer |
+| Push step: `refusing to allow a GitHub App to create or update workflow ... without workflows permission` | Upstream changed `.github/workflows/*`, and the built-in `GITHUB_TOKEN` may not push those files | Add a repository secret `SYNC_TOKEN`: a fine-grained token for this repository only, with Contents and Workflows read/write. The checkout uses it when present |
+| Push step: `GH007: Your push would publish a private email address` | A replayed commit is authored with a private address | The rebase rewrites `butterpurse@gmail.com` to the noreply address. Another private address needs the same treatment in the rebase step. Commit locally with a noreply address too |
+| x64 release builds twice | A push made with `SYNC_TOKEN` starts `linux-desktop.yml` through its tag trigger; a `GITHUB_TOKEN` push does not | Already handled: the step skips the explicit x64 dispatch when `SYNC_TOKEN` is set. arm64 is always dispatched |
+
+Rules for whoever fixes it:
+
+- Repository settings and secrets belong to the owner. An agent should hand
+  the exact command to the owner rather than change them, and should never
+  paste or print a token. To store the token `gh` already uses without showing
+  it: `gh auth token | gh secret set SYNC_TOKEN -R <repo>`.
+- Do not push to `master` while a sync run is in progress; its
+  `--force-with-lease` push will then fail.
+- Test a changed rebase step locally before pushing it: run the step's script
+  against a throwaway branch and check `git log --format=%ae <tag>..<branch>`.
+  Use a separate clone: the step's `git config` lines set the bot identity for
+  the whole clone, worktrees included.
+- After a successful run, close the open `upstream-sync` issue.
 
 ## Release
 
