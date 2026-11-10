@@ -91,6 +91,9 @@ jobs:
         if: steps.compare.outputs.needed == 'true'
         run: |
           target="${{ steps.upstream.outputs.tag }}"
+          # Rebase rewrites commits, which needs a committer identity; authors are kept.
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git remote add upstream https://github.com/deepseek-ai/deepseek-harness.git
           git fetch --tags --force upstream
           target_commit="$(git rev-parse "$target^{commit}")"
