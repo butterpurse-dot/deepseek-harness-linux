@@ -19,11 +19,18 @@ jobs:
     runs-on: ubuntu-24.04
     env:
       GH_REPO: ${{ github.repository }}
+      # A push made with SYNC_TOKEN starts linux-desktop.yml through its tag
+      # trigger, so the explicit start below is skipped to avoid a double build.
+      PAT_PUSH: ${{ secrets.SYNC_TOKEN != '' && 'yes' || '' }}
     steps:
       - uses: actions/checkout@v4
         with:
           ref: master
           fetch-depth: 0
+          # GITHUB_TOKEN may not push changes to workflow files, and upstream
+          # releases change them. SYNC_TOKEN: fine-grained token, this repo only,
+          # Contents + Workflows read/write.
+          token: ${{ secrets.SYNC_TOKEN || github.token }}
 
       - uses: actions/setup-node@v4
         with:
@@ -84,7 +91,7 @@ jobs:
           echo "moving $tag to $(git rev-parse --short HEAD) and releasing"
           git tag -f "$tag" HEAD
           git push -f origin "$tag"
-          gh workflow run linux-desktop.yml --repo "$GH_REPO" --ref "$tag"
+          [ -n "$PAT_PUSH" ] || gh workflow run linux-desktop.yml --repo "$GH_REPO" --ref "$tag"
           gh workflow run linux-desktop-arm64.yml --repo "$GH_REPO" --ref master
 
       - name: Rebase the Linux commits onto the new release
@@ -122,7 +129,7 @@ jobs:
           git push --force-with-lease origin master
           git tag -f "v$version" HEAD
           git push -f origin "v$version"
-          gh workflow run linux-desktop.yml --repo "$GH_REPO" --ref "v$version"
+          [ -n "$PAT_PUSH" ] || gh workflow run linux-desktop.yml --repo "$GH_REPO" --ref "v$version"
           gh workflow run linux-desktop-arm64.yml --repo "$GH_REPO" --ref master
 
       - name: Keep scheduled workflows enabled
