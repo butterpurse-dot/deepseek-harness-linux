@@ -104,14 +104,19 @@ jobs:
           git remote add upstream https://github.com/deepseek-ai/deepseek-harness.git
           git fetch --tags --force upstream
           target_commit="$(git rev-parse "$target^{commit}")"
-          first="$(git log --reverse --format='%H %ae' master | awk '$2=="butterpurse@gmail.com"{print $1; exit}')"
+          old_email="butterpurse@gmail.com"
+          noreply="248566377+butterpurse-dot@users.noreply.github.com"
+          first="$(git log --reverse --format='%H %ae' master | awk -v a="$old_email" -v b="$noreply" '$2==a || $2==b {print $1; exit}')"
           if [ -z "$first" ]; then
             echo "::error::cannot locate the first Linux commit on master"
             exit 1
           fi
           old_base="$(git rev-parse "$first^")"
           echo "rebasing commits after $old_base onto $target ($target_commit)"
-          git rebase --onto "$target_commit" "$old_base" master
+          # GitHub refuses pushes that publish the private address, so Linux
+          # commits move to the account's noreply address as they are replayed.
+          git rebase --onto "$target_commit" "$old_base" master --exec \
+            "[ \"\$(git log -1 --format=%ae)\" != '$old_email' ] || git commit --amend --no-edit --quiet --author=\"\$(git log -1 --format=%an) <$noreply>\""
 
       - name: Verify the rebased tree
         if: steps.compare.outputs.needed == 'true'
