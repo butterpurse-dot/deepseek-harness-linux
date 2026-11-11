@@ -32,6 +32,7 @@
 | Rebase 步骤：`Committer identity unknown` | runner 没有 git 身份 | 已修复：该步骤把 `github-actions[bot]` 设为 committer |
 | Push 步骤：`refusing to allow a GitHub App to create or update workflow ... without workflows permission` | 上游修改了 `.github/workflows/*`，内置的 `GITHUB_TOKEN` 不能推送这些文件 | 添加仓库 secret `SYNC_TOKEN`：仅限本仓库的 fine-grained token，Contents 和 Workflows 读写权限。存在时 checkout 会使用它 |
 | Push 步骤：`GH007: Your push would publish a private email address` | 重放的提交使用了私有邮箱作为作者 | rebase 会把 `butterpurse@gmail.com` 改写为 noreply 地址。其他私有地址需要在 rebase 步骤中同样处理。本地提交也请使用 noreply 地址 |
+| Refresh Arch hashes：`HTTP 422: Cannot upload assets to an immutable release` | 开启了不可变发布（immutable releases）。开启期间发布的 release 会被锁定：不能再添加文件，发布工作流也无法替换它 | 所有者：`gh api -X DELETE repos/<repo>/immutable-releases`。已锁定的 release 仍保持锁定；不要删除它，因为其 tag 可能无法再使用。该任务现在先提交 `PKGBUILD`，上传失败时只给出警告；arm64 应用内更新会跳过该版本。v0.2.2-rc.1 及其 arm64 release 已被锁定 |
 | x64 发布构建了两次 | 用 `SYNC_TOKEN` 推送会通过 tag 触发器启动 `linux-desktop.yml`；用 `GITHUB_TOKEN` 推送不会 | 已处理：设置了 `SYNC_TOKEN` 时，该步骤跳过显式的 x64 派发。arm64 总会被派发 |
 
 修复者须知：
