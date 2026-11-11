@@ -2,9 +2,9 @@
 # Build with: makepkg -si
 # Update: bump pkgver/_version, run `updpkgsums`, then `makepkg -si`.
 pkgname=deepseek-harness-bin
-pkgver=0.2.2alpha2
+pkgver=0.2.2rc1
 pkgrel=1
-_version=0.2.2-alpha.2
+_version=0.2.2-rc.1
 _tag=v${_version}
 pkgdesc="DeepSeek Harness desktop app packaged as an AppImage"
 arch=('x86_64' 'aarch64')
@@ -19,8 +19,8 @@ source=("deepseek-harness.png::https://raw.githubusercontent.com/butterpurse-dot
 source_x86_64=("deepseek-harness-${_version}-linux-x86_64-unsigned.AppImage::https://github.com/butterpurse-dot/deepseek-harness-linux/releases/download/${_tag}/deepseek-harness-${_version}-linux-x86_64-unsigned.AppImage")
 source_aarch64=("deepseek-harness-${_version}-linux-arm64-unsigned.AppImage::https://github.com/butterpurse-dot/deepseek-harness-linux/releases/download/${_tag}/deepseek-harness-${_version}-linux-arm64-unsigned.AppImage")
 sha256sums=('982c2859568d83d2576110a527c545f04641f4008bdb2cfeb6758f333c0fb07a')
-sha256sums_x86_64=('470bbfbbc247c36b8d64a6bef5360e636c05dad074567aeb3560f6e1c58a7292')
-sha256sums_aarch64=('99214b9a6b2ecbfc72c79348421aa683de8a452a6987e02a021ea50a26b511f5')
+sha256sums_x86_64=('ebab9c57acfba83e376c889162ba7e550af5cefcd66ba1b379ef7c14992000e4')
+sha256sums_aarch64=('d6d5f5aaace6f3802a5508af32d9a4f3cfd305b0490f76c35f0ca95130365b73')
 
 package() {
   local appimage
