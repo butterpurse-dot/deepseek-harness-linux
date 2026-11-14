@@ -27,6 +27,7 @@ function link(url: string, label = url): string { return `<a href="${text(url)}"
 export async function desktopPublicationSummary(
   source: DesktopRetainedSource, plan: DesktopUploadPlan, approval: string, uploadWebsite: boolean,
 ): Promise<string> {
+  if (plan.target === 'linux-x64' || plan.target === 'linux-arm64') throw new Error('desktop publication: Linux packages publish directly from their workflow')
   const origin = new URL(plan.publicUrl).origin
   const url = (key: string) => `${origin}/${key.split('/').map(encodeURIComponent).join('/')}`
   const files = []
