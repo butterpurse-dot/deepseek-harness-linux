@@ -28,7 +28,11 @@ release does not trigger another release.
 
 If the rebase or verification fails, the workflow opens or updates an
 `upstream-sync` issue and leaves the last release untouched. Fix the conflict
-locally, push the corrected commit, then re-run the sync. The project has no
+locally: rebase the Linux commits onto the new tag yourself and push the result
+as branch `sync/resolved-<tag>` (for example `sync/resolved-dsh-v0.2.2-rc.3`),
+then re-run the sync. It uses that branch instead of rebasing when the branch
+starts from the tag, holds every Linux commit on master (matched by subject) and
+carries no private address; the usual verification still runs before master moves. The project has no
 active maintainer, so a blocked sync needs a community contributor.
 
 The workflow also writes `.github/keepalive` about once a month. That commit

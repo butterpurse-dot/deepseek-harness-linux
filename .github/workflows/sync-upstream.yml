@@ -112,6 +112,22 @@ jobs:
             exit 1
           fi
           old_base="$(git rev-parse "$first^")"
+          # A rebase that conflicts can be resolved once, by hand, on a branch named
+          # sync/resolved-<tag>: the Linux commits already rebased onto <tag>. When that
+          # branch exists it replaces the automatic rebase, after these checks.
+          resolved="sync/resolved-$target"
+          if git fetch origin "refs/heads/$resolved:refs/remotes/origin/$resolved" 2>/dev/null; then
+            r="origin/$resolved"
+            git merge-base --is-ancestor "$target_commit" "$r" \
+              || { echo "::error::$resolved is not based on $target"; exit 1; }
+            missing="$(comm -23 <(git log --format=%s "$old_base..master" | sort -u) <(git log --format=%s "$target_commit..$r" | sort -u))"
+            [ -z "$missing" ] || { echo "::error::$resolved lacks master commits:"; echo "$missing"; exit 1; }
+            ! git log --format='%ae %ce' "$target_commit..$r" | grep -qF "$old_email" \
+              || { echo "::error::$resolved carries the private address"; exit 1; }
+            echo "using the resolution on $resolved ($(git rev-parse --short "$r"))"
+            git checkout --no-track -B master "$r"
+            exit 0
+          fi
           echo "rebasing commits after $old_base onto $target ($target_commit)"
           # GitHub refuses pushes that publish the private address, so Linux
           # commits move to the account's noreply address as they are replayed.
