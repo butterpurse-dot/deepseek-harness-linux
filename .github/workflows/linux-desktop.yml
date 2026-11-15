@@ -97,7 +97,9 @@ jobs:
           tag="v$version"
           artifacts="apps/desktop/.desktop-build/targets/linux-x64/unsigned-artifacts"
           sed "s/__VERSION__/$version/g" docs/RELEASE_NOTES.md > /tmp/release-notes.md
-          gh release upload "$tag" "$artifacts/SHA256SUMS.txt" scripts/install-linux.sh --clobber
+          test -f "$artifacts/latest-linux.yml"
+          cp "$artifacts/latest-linux.yml" "$artifacts/stable-linux.yml"
+          gh release upload "$tag" "$artifacts/SHA256SUMS.txt" scripts/install-linux.sh "$artifacts/stable-linux.yml" --clobber
           gh release edit "$tag" --draft=false --notes-file /tmp/release-notes.md
 
       - name: Announce on X

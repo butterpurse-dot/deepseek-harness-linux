@@ -5,6 +5,8 @@ import {
   resolveDesktopPackageTarget,
 } from '../scripts/package-target.ts'
 import { localLinuxPackageEnvironment } from '../scripts/desktop-package-environment.mjs'
+import { createElectronBuilderConfig } from '../scripts/electron-builder-config.mjs'
+import { desktopUpdateChannel } from '../src/update-channel.ts'
 import { selectOfficeEngine } from '../../../scripts/libreoffice-packages.mjs'
 
 describe('Linux desktop packaging', () => {
@@ -55,5 +57,11 @@ describe('Linux desktop packaging', () => {
     expect(selectOfficeEngine({
       optionalDependencies: { '@deepseek-ai/libreoffice-kit-darwin-arm64': '1.0.0' },
     }, { platform: 'darwin', arch: 'arm64' })).toBe('darwin-arm64')
+  })
+
+  it('seals the stable update channel a Linux package launches with', () => {
+    const config = createElectronBuilderConfig(localLinuxPackageEnvironment({ PATH: '/usr/bin' }), 'linux', 'x64')
+    expect(config.extraMetadata).toMatchObject({ dshDesktopUpdateChannel: 'stable' })
+    expect(desktopUpdateChannel(config.extraMetadata)).toBe('stable')
   })
 })

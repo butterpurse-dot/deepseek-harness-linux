@@ -63,3 +63,13 @@ jobs:
             gh release upload "v$version" "$arm64_feed" --repo "$GITHUB_REPOSITORY" --clobber \
               || echo "::warning::could not add latest-linux-arm64.yml to v$version (immutable release?); arm64 in-app updates skip this version"
           fi
+
+          # Installed Linux apps sealed 'stable' read this second name set; both carry the same content.
+          stable_arm64_feed=/tmp/stable-linux-arm64.yml
+          rm -f "$stable_arm64_feed"
+          gh release download "v$version-arm64" --repo "$GITHUB_REPOSITORY" \
+            --pattern stable-linux-arm64.yml --output "$stable_arm64_feed" --clobber 2>/dev/null || true
+          if [ -f "$stable_arm64_feed" ] && gh release view "v$version" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "v$version" "$stable_arm64_feed" --repo "$GITHUB_REPOSITORY" --clobber \
+              || echo "::warning::could not add stable-linux-arm64.yml to v$version (immutable release?); arm64 in-app updates skip this version"
+          fi

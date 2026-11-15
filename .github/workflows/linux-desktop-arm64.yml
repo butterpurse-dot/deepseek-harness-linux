@@ -89,6 +89,7 @@ jobs:
           printf 'version: %s\nfiles:\n  - url: https://github.com/%s/releases/download/v%s-arm64/%s\n    sha512: %s\n    size: %s\npath: %s\nsha512: %s\nreleaseDate: %s\n' \
             "$version" "$GITHUB_REPOSITORY" "$version" "$appimage" "$sha512" "$size" "$appimage" "$sha512" \
             "$(date -u +%Y-%m-%dT%H:%M:%S.000Z)" > "$artifacts/latest-linux-arm64.yml"
+          cp "$artifacts/latest-linux-arm64.yml" "$artifacts/stable-linux-arm64.yml"
 
       - name: Publish arm64 release
         env:
@@ -101,7 +102,7 @@ jobs:
             gh release delete "$tag" --repo "$GH_REPO" --yes --cleanup-tag
           fi
           gh release create "$tag" \
-            "$artifacts"/*.AppImage "$artifacts"/*.deb "$artifacts"/*.tar.gz "$artifacts"/*.rpm "$artifacts/SHA256SUMS.txt" "$artifacts/latest-linux-arm64.yml" \
+            "$artifacts"/*.AppImage "$artifacts"/*.deb "$artifacts"/*.tar.gz "$artifacts"/*.rpm "$artifacts/SHA256SUMS.txt" "$artifacts/latest-linux-arm64.yml" "$artifacts/stable-linux-arm64.yml" \
             scripts/install-linux.sh \
             --repo "$GH_REPO" --target "$GITHUB_SHA" --latest=false \
             --title "DeepSeek Harness $version (arm64)" \
